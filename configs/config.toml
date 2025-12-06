@@ -1,0 +1,15 @@
+[log]
+level = "info"
+format = "console" # "json" or "console"
+output = "both" # "stdout", "file", or "both"
+log_dir = "./logs"
+log_file = "mcp.log"
+max_size = 50 # megabytes
+max_backups = 10
+max_age = 7 # days
+compress = false
+enable_caller = true
+caller_skip = 1
+
+[gateway]
+url = "http://172.30.34.73/graphql" # oap地址
