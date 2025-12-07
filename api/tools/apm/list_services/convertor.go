@@ -1,6 +1,7 @@
 package list_services
 
 import (
+	"beedance-mcp/api/tools/apm"
 	"bytes"
 	"fmt"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func convert2Variables(request mcp.CallToolRequest) (ListServicesVariables, error) {
-	workspaceId, err := request.RequireString(workspaceIdParamName)
+	workspaceId, err := request.RequireString(apm.WorkspaceIdParamName)
 	if err != nil {
 		return ListServicesVariables{}, fmt.Errorf("工具空间ID参数错误：%w", err)
 	}

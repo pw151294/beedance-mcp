@@ -33,11 +33,11 @@ build:
 .PHONY: package
 package: build
 	@echo "==> Packaging to $(TAR_PATH)..."
-	@# 先切换到项目根目录，然后执行打包，所有路径都相对于根目录
+	@# 在项目根目录打包，使用 -C 选项将二进制文件放到压缩包根目录
 	cd $(ROOT_DIR) && tar -czf build/$(TAR_NAME) \
 		.env \
 		configs/config.toml \
-		build/$(BIN_NAME)
+		-C build $(BIN_NAME)
 	@echo "==> Package complete: $(TAR_PATH)"
 
 # 清理构建产物

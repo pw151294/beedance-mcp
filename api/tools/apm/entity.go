@@ -17,3 +17,10 @@ type MetricValue struct {
 type MetricValues struct {
 	Values []MetricValue `json:"values"`
 }
+
+const (
+	WorkspaceIdParamName = "workspaceId"
+	WorkspaceIdParamDesc = "工作空间ID"
+	TokenParamName       = "token"
+	TokenParamDesc       = "用户身份信息校验token"
+)

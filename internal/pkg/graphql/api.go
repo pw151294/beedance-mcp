@@ -24,6 +24,7 @@ type GraphqlResponse[T any] struct {
 // DoGraphqlRequest 泛型函数 发送graphql请求
 func DoGraphqlRequest[V, T any](query string, headers map[string]string, variables V) (*GraphqlResponse[T], error) {
 	graphqlClient := GetClient()
+	defer PutClient(graphqlClient)
 
 	// 1. 构建http请求
 	graphqlReq := GraphqlRequest[V]{}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/loggers"
@@ -42,6 +43,7 @@ func main() {
 
 	// 添加apm工具
 	s.AddTool(list_services.ListServicesToolSchema(), list_services.InvokeListServicesTool)
+	s.AddTool(metrics_services.MetricsServiceToolSchema(), metrics_services.InvokeMetricsServicesTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)

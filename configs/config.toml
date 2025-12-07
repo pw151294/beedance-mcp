@@ -12,4 +12,4 @@ enable_caller = true
 caller_skip = 1
 
 [gateway]
-url = "http://172.30.34.73/graphql" # oap地址
+url = "http://172.31.186.189/graphql" # oap地址
