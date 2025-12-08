@@ -13,8 +13,8 @@ import (
 var serviceRegister *ServicesRegister
 
 type ServicesRegister struct {
-	nameIdMap *table.Table[string, string, string] // workspaceId -> serviceName -> serviceID
-	idNameMap *table.Table[string, string, string] // workspaceId -> serviceID -> serviceName
+	name2Id *table.Table[string, string, string] // workspaceId -> serviceName -> serviceID
+	id2Name *table.Table[string, string, string] // workspaceId -> serviceID -> serviceName
 }
 
 func RefreshJustForTest(workspaceId string, listServicesResp ListServicesResponse) {
@@ -22,6 +22,10 @@ func RefreshJustForTest(workspaceId string, listServicesResp ListServicesRespons
 		serviceRegister = newServiceRegister()
 	}
 	serviceRegister.refresh(workspaceId, listServicesResp)
+}
+
+func ClearServicesRegister() {
+	serviceRegister = nil // 置空 等待下次初始化
 }
 
 func InitServicesRegister(request mcp.CallToolRequest) {
@@ -61,8 +65,8 @@ func ServiceName(workspaceId string, serviceID string) string {
 
 func newServiceRegister() *ServicesRegister {
 	return &ServicesRegister{
-		nameIdMap: table.NewTable[string, string, string](),
-		idNameMap: table.NewTable[string, string, string](),
+		name2Id: table.NewTable[string, string, string](),
+		id2Name: table.NewTable[string, string, string](),
 	}
 }
 func (sr *ServicesRegister) refresh(workspaceId string, listServicesResp ListServicesResponse) {
@@ -70,18 +74,18 @@ func (sr *ServicesRegister) refresh(workspaceId string, listServicesResp ListSer
 	if workspaceId == "" || len(services) == 0 {
 		return
 	}
-	if sr.nameIdMap == nil {
-		sr.nameIdMap = table.NewTable[string, string, string]()
+	if sr.name2Id == nil {
+		sr.name2Id = table.NewTable[string, string, string]()
 	}
-	if sr.idNameMap == nil {
-		sr.idNameMap = table.NewTable[string, string, string]()
+	if sr.id2Name == nil {
+		sr.id2Name = table.NewTable[string, string, string]()
 	}
 
-	sr.nameIdMap.Clear()
-	sr.idNameMap.Clear()
+	sr.name2Id.Clear()
+	sr.id2Name.Clear()
 	for _, svc := range services {
-		sr.nameIdMap.Put(workspaceId, svc.Label, svc.ID)
-		sr.idNameMap.Put(workspaceId, svc.ID, svc.Label)
+		sr.name2Id.Put(workspaceId, svc.Label, svc.ID)
+		sr.id2Name.Put(workspaceId, svc.ID, svc.Label)
 	}
 }
 func (sr *ServicesRegister) getServiceIDs(workspaceId string, serviceNames []string) []string {
@@ -91,7 +95,7 @@ func (sr *ServicesRegister) getServiceIDs(workspaceId string, serviceNames []str
 	}
 
 	for _, svcName := range serviceNames {
-		svcID, ok := sr.nameIdMap.Get(workspaceId, svcName)
+		svcID, ok := sr.name2Id.Get(workspaceId, svcName)
 		if ok && svcID != "" {
 			serviceIDs = append(serviceIDs, svcID)
 		}
@@ -100,7 +104,7 @@ func (sr *ServicesRegister) getServiceIDs(workspaceId string, serviceNames []str
 	return serviceIDs
 }
 func (sr *ServicesRegister) getServiceName(workspaceId string, serviceID string) string {
-	svcName, ok := sr.idNameMap.Get(workspaceId, serviceID)
+	svcName, ok := sr.id2Name.Get(workspaceId, serviceID)
 	if ok && svcName != "" {
 		return svcName
 	}

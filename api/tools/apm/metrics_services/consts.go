@@ -3,11 +3,6 @@ package metrics_services
 const metricsServiceToolName = "metrics_services"
 const metricsServiceToolDescription = "查询服务的接口负载、成功率还有平均响应时间"
 
-const startParamName = "start"
-const startParamDesc = "查询时间范围的起始时间，遵循'YYYY-MM-DD HH::mm:ss'的格式"
-const serviceNamesParamName = "serviceNames"
-const serviceNamesParamDesc = "服务名称列表"
-
 const metricsM0Name = "service_cpm"
 const metricsM1Name = "service_sla"
 const metricsM2Name = "service_resp_time"

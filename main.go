@@ -5,6 +5,7 @@ import (
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/graphql"
+	"beedance-mcp/internal/schedulers"
 	"beedance-mcp/pkg/loggers"
 	"flag"
 	"log"
@@ -31,6 +32,7 @@ func main() {
 		log.Fatalf("init logger err: %v", err)
 	}
 	graphql.InitClient()
+	schedulers.StartClearRegisterScheduler()
 
 	// 创建 MCP 服务器
 	s := server.NewMCPServer(

@@ -20,12 +20,12 @@ func convert2Variables(request mcp.CallToolRequest) (ServiceMetricsVariables, er
 		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
 		return ServiceMetricsVariables{}, errors.New("请求头未携带工作空间ID")
 	}
-	serviceNames, err := request.RequireStringSlice(serviceNamesParamName)
+	serviceNames, err := request.RequireStringSlice(apm.ServiceNamesParamName)
 	if err != nil {
 		loggers.Error("parse serviceNames failed", zap.Error(err))
 		return ServiceMetricsVariables{}, fmt.Errorf("服务名称列表参数错误：%w", err)
 	}
-	start := request.GetString(startParamName, "")
+	start := request.GetString(apm.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
 		loggers.Error("build duration failed", zap.String("start", start), zap.Error(err))
