@@ -19,8 +19,6 @@ type MetricValues struct {
 }
 
 const (
-	WorkspaceIdParamName = "workspaceId"
-	WorkspaceIdParamDesc = "工作空间ID"
-	TokenParamName       = "token"
-	TokenParamDesc       = "用户身份信息校验token"
+	WorkspaceIdHeaderName = "Workspaceid"
+	TokenHeaderName       = "Token"
 )

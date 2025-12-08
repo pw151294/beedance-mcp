@@ -2,16 +2,20 @@ package list_services
 
 import (
 	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/pkg/loggers"
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
+	"go.uber.org/zap"
 )
 
 func convert2Variables(request mcp.CallToolRequest) (ListServicesVariables, error) {
-	workspaceId, err := request.RequireString(apm.WorkspaceIdParamName)
-	if err != nil {
-		return ListServicesVariables{}, fmt.Errorf("工具空间ID参数错误：%w", err)
+	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	if workspaceId == "" {
+		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
+		return ListServicesVariables{}, errors.New("请求头未携带工作空间ID")
 	}
 
 	variables := ListServicesVariables{}

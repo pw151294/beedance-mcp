@@ -1,17 +1,25 @@
 package httputils
 
-import "github.com/mark3labs/mcp-go/mcp"
+import (
+	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/pkg/loggers"
+	"errors"
+
+	"github.com/mark3labs/mcp-go/mcp"
+	"go.uber.org/zap"
+)
 
 func BuildHeaders(request mcp.CallToolRequest) (map[string]string, error) {
-	workspaceId, err := request.RequireString("workspaceId")
-	if err != nil {
-		return nil, err
+	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	if workspaceId == "" {
+		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
+		return nil, errors.New("请求头未携带工作空间ID")
 	}
-	token, err := request.RequireString("token")
-	if err != nil {
-		return nil, err
+	token := request.Header.Get(apm.TokenHeaderName)
+	if token == "" {
+		loggers.Error("parse token from header failed", zap.Any("headers", request.Header))
+		return nil, errors.New("请求头未携带Token认证令牌")
 	}
-
 	return map[string]string{
 		"workspace-id": workspaceId,
 		"token":        token,

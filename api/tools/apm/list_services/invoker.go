@@ -1,7 +1,6 @@
 package list_services
 
 import (
-	"beedance-mcp/api/tools/apm"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
 	"context"
@@ -13,8 +12,6 @@ func ListServicesToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		listServicesToolName,
 		mcp.WithDescription(listServicesToolDesc),
-		mcp.WithString(apm.WorkspaceIdParamName, mcp.Required(), mcp.Description(apm.WorkspaceIdParamDesc)),
-		mcp.WithString(apm.TokenParamName, mcp.Required(), mcp.Description(apm.TokenParamDesc)),
 	)
 }
 

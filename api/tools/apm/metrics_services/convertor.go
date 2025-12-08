@@ -7,6 +7,7 @@ import (
 	"beedance-mcp/pkg/table"
 	"beedance-mcp/pkg/timeutils"
 	"bytes"
+	"errors"
 	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -14,10 +15,10 @@ import (
 )
 
 func convert2Variables(request mcp.CallToolRequest) (ServiceMetricsVariables, error) {
-	workspaceId, err := request.RequireString(apm.WorkspaceIdParamName)
-	if err != nil {
-		loggers.Error("parse workspaceId failed", zap.Error(err))
-		return ServiceMetricsVariables{}, fmt.Errorf("工具空间ID参数错误：%w", err)
+	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	if workspaceId == "" {
+		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
+		return ServiceMetricsVariables{}, errors.New("请求头未携带工作空间ID")
 	}
 	serviceNames, err := request.RequireStringSlice(serviceNamesParamName)
 	if err != nil {

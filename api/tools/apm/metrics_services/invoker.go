@@ -1,7 +1,6 @@
 package metrics_services
 
 import (
-	"beedance-mcp/api/tools/apm"
 	"beedance-mcp/api/tools/apm/list_services"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
@@ -16,8 +15,6 @@ func MetricsServiceToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		metricsServiceToolName,
 		mcp.WithDescription(metricsServiceToolDescription),
-		mcp.WithString(apm.WorkspaceIdParamName, mcp.Required(), mcp.Description(apm.WorkspaceIdParamDesc)),
-		mcp.WithString(apm.TokenParamName, mcp.Required(), mcp.Description(apm.TokenParamDesc)),
 		mcp.WithString(startParamName, mcp.Description(startParamDesc)),
 		mcp.WithArray(serviceNamesParamName, mcp.Required(), mcp.Description(serviceNamesParamDesc)),
 	)
