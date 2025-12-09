@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func MetricsServiceToolSchema() mcp.Tool {
+func ServicesTopologyToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		serviceTopologyToolName,
 		mcp.WithDescription(serviceTopologyToolDesc),
@@ -20,29 +20,39 @@ func MetricsServiceToolSchema() mcp.Tool {
 	)
 }
 
-func InvokeServicesTopologyTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+func servicesTopology(request mcp.CallToolRequest) (ServiceTopologyResponse, string, error) {
 	// 1. 转换请求参数
 	variables, err := convert2TopoVariables(request)
 	if err != nil {
 		loggers.Error("convert to topo graph request variables failed", zap.Error(err), zap.Any("request", request))
-		return mcp.NewToolResultError("获取graphql请求参数失败：" + err.Error()), nil
+		return ServiceTopologyResponse{}, "", err
 	}
 
 	// 2. 发送graphql请求
 	headers, err := httputils.BuildHeaders(request)
 	if err != nil {
 		loggers.Error("build headers failed", zap.Error(err), zap.Any("request", request))
-		return mcp.NewToolResultError("构建graphql请求头失败：" + err.Error()), nil
+		return ServiceTopologyResponse{}, "", err
 	}
 	graphqlResp, err := graphql.DoGraphqlRequest[ServiceTopologyVariables, ServiceTopologyResponse](graphqlQuery, headers, variables)
 	if err != nil {
 		loggers.Error("send graphql request failed", zap.Error(err), zap.Any("variables", variables), zap.Any("headers", headers))
-		return mcp.NewToolResultError("调用graphql接口失败：" + err.Error()), nil
+		return ServiceTopologyResponse{}, "", err
+	}
+	loggers.Info("call graphql request success", zap.Any("graphqlResp", graphqlResp))
+	return graphqlResp.Data, variables.WorkspaceID, nil
+}
+
+func InvokeServicesTopologyTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	// 1. 获取服务拓扑数据
+	topologyResp, workspaceId, err := servicesTopology(request)
+	if err != nil {
+		loggers.Error("get services topology failed", zap.Error(err))
+		return mcp.NewToolResultError("获取服务拓扑失败：" + err.Error()), nil
 	}
 
-	// 3. 将工具调用的结果转换成白话文
-	loggers.Info("call graphql request success", zap.Any("graphqlResp", graphqlResp))
-	message := convert2Message(variables.WorkspaceID, graphqlResp.Data)
+	// 2. 将工具调用的结果转换成白话文
+	message := convert2Message(workspaceId, topologyResp)
 	loggers.Info("tool invoke success", zap.String("message", message))
 	return mcp.NewToolResultText(message), nil
 }

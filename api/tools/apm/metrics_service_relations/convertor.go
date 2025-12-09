@@ -2,9 +2,12 @@ package metrics_service_relations
 
 import (
 	"beedance-mcp/api/tools/apm"
-	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/api/tools/apm/services_topology"
+	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
+	"beedance-mcp/pkg/table"
 	"beedance-mcp/pkg/timeutils"
+	"bytes"
 	"errors"
 	"fmt"
 
@@ -33,14 +36,14 @@ func convert2Variables(request mcp.CallToolRequest) (ServiceRelationMetricsVaria
 	variables := ServiceRelationMetricsVariables{}
 	variables.WorkspaceID = workspaceId
 	variables.Duration = duration
-	variables.IDs = list_services.ServiceIDs(workspaceId, serviceNames)
+	variables.IDs = services_topology.ConvertServiceNames2CallIDs(request, workspaceId, serviceNames)
 	return variables, nil
 }
 
 func convert2ClientVariables(request mcp.CallToolRequest) (ServiceRelationMetricsVariables, error) {
 	variables, err := convert2Variables(request)
 	if err != nil {
-		return variables, fmt.Errorf("转换服务调用关系客户端指标查询参数失败：%w", err)
+		return variables, fmt.Errorf("构建service_relation_client指标查询参数失败：%w", err)
 	}
 	variables.M0 = metricsClientM0Name
 	variables.M1 = metricsClientM1Name
@@ -50,9 +53,62 @@ func convert2ClientVariables(request mcp.CallToolRequest) (ServiceRelationMetric
 func convert2ServerVariables(request mcp.CallToolRequest) (ServiceRelationMetricsVariables, error) {
 	variables, err := convert2Variables(request)
 	if err != nil {
-		return variables, fmt.Errorf("转换服务调用关系服务端查询参数失败：%w", err)
+		return variables, fmt.Errorf("构建service_relation_server指标查询参数失败：%w", err)
 	}
 	variables.M0 = metricsServerM0Name
 	variables.M1 = metricsServerM1Name
 	return variables, nil
+}
+
+func convert2Table(clientResp ServiceRelationClientMetricsResponse, serverResp ServiceRelationServerMetricsResponse) *table.Table[string, string, int64] {
+	metricsRegister := table.NewTable[string, string, int64]()
+
+	clientCpms := clientResp.ServiceRelationClientCPM.Values
+	for _, cpm := range clientCpms {
+		metricsRegister.Put(cpm.ID, metricsClientM0Name, cpm.Value)
+	}
+	clientRts := clientResp.ServiceRelationClientRespTime.Values
+	for _, rt := range clientRts {
+		metricsRegister.Put(rt.ID, metricsClientM1Name, rt.Value)
+	}
+
+	serverCpms := serverResp.ServiceRelationServerCPM.Values
+	for _, cpm := range serverCpms {
+		metricsRegister.Put(cpm.ID, metricsServerM0Name, cpm.Value)
+	}
+	serverRts := serverResp.ServiceRelationServerRespTime.Values
+	for _, rt := range serverRts {
+		metricsRegister.Put(rt.ID, metricsServerM1Name, rt.Value)
+	}
+
+	return metricsRegister
+}
+
+func convert2Message(request mcp.CallToolRequest, clientResp ServiceRelationClientMetricsResponse, serverResp ServiceRelationServerMetricsResponse) string {
+	workspaceId, _ := request.RequireString(apm.WorkspaceIdHeaderName)
+	metricsRegister := convert2Table(clientResp, serverResp)
+	id2Node := services_topology.CollectId2Node(request, workspaceId)
+
+	var toolInvokeMessageBuffer bytes.Buffer
+	if metricsRegister.Size() == 0 {
+		toolInvokeMessageBuffer.WriteString("未查询到任何服务调用指标数据")
+	} else {
+		toolInvokeMessageBuffer.WriteString("服务调用指标数据如下：\n")
+		callIds := metricsRegister.Rows()
+		for _, callId := range callIds {
+			srcId, tgtId := convertor.ConvertCallID2ServiceIDs(callId)
+			srcNode, tgtNode := id2Node[srcId], id2Node[tgtId]
+			srcName, tgtName := convertor.ConvertID2Name(srcId), convertor.ConvertID2Name(tgtId)
+
+			clientCpm, _ := metricsRegister.Get(callId, metricsClientM0Name)
+			clientRt, _ := metricsRegister.Get(callId, metricsClientM1Name)
+			serverCpm, _ := metricsRegister.Get(callId, metricsServerM0Name)
+			serverRt, _ := metricsRegister.Get(callId, metricsServerM1Name)
+			// todo 需要明确client/server数据的含义
+			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceRelationInfoPattern, srcName, tgtName, srcNode.Type, tgtNode.Type,
+				clientCpm, clientRt, serverCpm, serverRt))
+		}
+	}
+
+	return toolInvokeMessageBuffer.String()
 }

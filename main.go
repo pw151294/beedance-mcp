@@ -2,10 +2,11 @@ package main
 
 import (
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
+	"beedance-mcp/api/tools/apm/services_topology"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/graphql"
-	"beedance-mcp/internal/schedulers"
 	"beedance-mcp/pkg/loggers"
 	"flag"
 	"log"
@@ -32,7 +33,6 @@ func main() {
 		log.Fatalf("init logger err: %v", err)
 	}
 	graphql.InitClient()
-	schedulers.StartClearRegisterScheduler()
 
 	// 创建 MCP 服务器
 	s := server.NewMCPServer(
@@ -46,6 +46,8 @@ func main() {
 	// 添加apm工具
 	s.AddTool(list_services.ListServicesToolSchema(), list_services.InvokeListServicesTool)
 	s.AddTool(metrics_services.MetricsServiceToolSchema(), metrics_services.InvokeMetricsServicesTool)
+	s.AddTool(services_topology.ServicesTopologyToolSchema(), services_topology.InvokeServicesTopologyTool)
+	s.AddTool(metrics_service_relations.ServiceRelationMetricsToolSchema(), metrics_service_relations.InvokeMetricsServiceRelationTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)

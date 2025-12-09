@@ -3,6 +3,7 @@ package services_topology
 import (
 	"beedance-mcp/api/tools/apm"
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/internal/pkg/cache"
 	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
 	"beedance-mcp/pkg/table"
@@ -14,6 +15,69 @@ import (
 	"github.com/mark3labs/mcp-go/mcp"
 	"go.uber.org/zap"
 )
+
+func CollectId2Node(request mcp.CallToolRequest, workspaceId string) map[string]Node {
+	id2Node := cache.GetByKey[map[string]Node](cache.Id2Node, workspaceId, func() any {
+		servicesTopoResp, _, err := servicesTopology(request)
+		if err != nil {
+			loggers.Error("get services topology failed", zap.Error(err))
+			return nil
+		}
+
+		id2Node := make(map[string]Node)
+		nodes := servicesTopoResp.Topology.Nodes
+		if len(nodes) > 0 {
+			for _, node := range nodes {
+				id2Node[node.ID] = node
+			}
+		}
+
+		return id2Node
+	})
+	return id2Node
+}
+
+func ConvertServiceNames2CallIDs(request mcp.CallToolRequest, workspaceId string, serviceNames []string) []string {
+	id2Call := cache.GetByKey[map[string]Call](cache.Id2Call, workspaceId, func() any {
+		servicesTopoResp, _, err := servicesTopology(request)
+		if err != nil {
+			loggers.Error("get services topology failed", zap.Error(err))
+			return nil
+		}
+
+		id2Call := make(map[string]Call)
+		calls := servicesTopoResp.Topology.Calls
+		if len(calls) > 0 {
+			for _, call := range calls {
+				id2Call[call.ID] = call
+			}
+		}
+
+		return id2Call
+	})
+
+	svcIds := list_services.ConvertServiceNames2IDs(request, workspaceId, serviceNames)
+	svcIdSet := make(map[string]struct{})
+	for _, id := range svcIds {
+		svcIdSet[id] = struct{}{}
+	}
+
+	callIdSet := make(map[string]struct{})
+	for id, call := range id2Call {
+		_, srcOk := svcIdSet[call.Source]
+		_, tgtOk := svcIdSet[call.Target]
+		if srcOk || tgtOk {
+			callIdSet[id] = struct{}{}
+		}
+		callIdSet[id] = struct{}{}
+	}
+
+	callIds := make([]string, 0, len(callIdSet))
+	for id := range callIdSet {
+		callIds = append(callIds, id)
+	}
+	return callIds
+}
 
 func convert2TopoVariables(request mcp.CallToolRequest) (ServiceTopologyVariables, error) {
 	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)

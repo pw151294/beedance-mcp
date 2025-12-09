@@ -10,9 +10,9 @@ const metricsClientM1Name = "service_relation_client_resp_time"
 const metricsServerM0Name = "service_relation_server_cpm"
 const metricsServerM1Name = "service_relation_server_resp_time"
 
-const serviceRelationInfoPattern = "调用方：%s；被调用方：%s；调用方类型：%s；被调用方类型：%s；负载：%d次/分；响应时间：%d毫秒\n"
+const serviceRelationInfoPattern = "调用方：%s；被调用方：%s；调用方类型：%s；被调用方类型：%s；client负载：%d次/分；client响应时间：%d毫秒；server负载：%d次/分；server响应时间：%d毫秒\n"
 
-const serviceRelationClientGraphQuery = `query queryData($duration: Duration!,$ids: [ID!]!,$m0: String!,$m1: String!) {
+const serviceRelationClientGraphqlQuery = `query queryData($duration: Duration!,$ids: [ID!]!,$m0: String!,$m1: String!) {
   service_relation_client_cpm: getValues(metric: {
       name: $m0
       ids: $ids

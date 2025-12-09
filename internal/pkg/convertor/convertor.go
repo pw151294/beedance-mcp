@@ -9,6 +9,7 @@ import (
 )
 
 const splitter = "|"
+const callSplitter = "-"
 
 func decodeBase64(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
@@ -30,4 +31,13 @@ func ConvertID2Name(serviceID string) string {
 		return fullServiceName[:idx]
 	}
 	return fullServiceName
+}
+
+func ConvertCallID2ServiceIDs(callID string) (string, string) {
+	svcIds := strings.Split(callID, callSplitter)
+	if len(svcIds) != 2 {
+		loggers.Warn("invalid call id format", zap.String("callID", callID))
+		return "", ""
+	}
+	return svcIds[0], svcIds[1]
 }
