@@ -2,7 +2,6 @@ package metrics_services
 
 import (
 	"beedance-mcp/api/tools/apm"
-	"beedance-mcp/api/tools/apm/list_services"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
 	"beedance-mcp/pkg/loggers"
@@ -23,7 +22,6 @@ func MetricsServiceToolSchema() mcp.Tool {
 
 func InvokeMetricsServicesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// 1. 转换请求参数
-	list_services.InitServicesRegister(request)
 	variables, err := convert2Variables(request)
 	if err != nil {
 		loggers.Error("convert request to graphql variables failed", zap.Any("request", request), zap.Error(err))
@@ -45,7 +43,7 @@ func InvokeMetricsServicesTool(ctx context.Context, request mcp.CallToolRequest)
 
 	// 3. 将工具调用结果转换成白话文
 	loggers.Info("call graphql request success", zap.Any("metrics services", graphqlResp))
-	message := convert2Message(variables.WorkspaceID, graphqlResp.Data)
+	message := convert2Message(graphqlResp.Data)
 	loggers.Info("tool invoke success", zap.String("message", message))
 	return mcp.NewToolResultText(message), nil
 }

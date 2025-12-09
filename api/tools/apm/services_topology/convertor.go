@@ -3,7 +3,9 @@ package services_topology
 import (
 	"beedance-mcp/api/tools/apm"
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
+	"beedance-mcp/pkg/table"
 	"beedance-mcp/pkg/timeutils"
 	"bytes"
 	"errors"
@@ -34,26 +36,46 @@ func convert2TopoVariables(request mcp.CallToolRequest) (ServiceTopologyVariable
 	variables := ServiceTopologyVariables{}
 	variables.WorkspaceID = workspaceId
 	variables.Duration = duration
-	variables.IDs = list_services.ServiceIDs(workspaceId, serviceNames)
+	variables.IDs = list_services.ConvertServiceNames2IDs(request, workspaceId, serviceNames)
 	return variables, nil
 }
 
-func convert2Message(workspaceId string, serviceTopoResp ServiceTopologyResponse) string {
+func convert2Tables(workspaceId string, serviceTopoResp ServiceTopologyResponse) (nodeRegister *table.Table[string, string, Node], callRegister *table.Table[string, string, Call]) {
+	nodeRegister = table.NewTable[string, string, Node]()
+	callRegister = table.NewTable[string, string, Call]()
 	topology := serviceTopoResp.Topology
 	nodes := topology.Nodes
 	calls := topology.Calls
 
-	var toolInvokeMessageBuffer bytes.Buffer
-	if len(nodes) == 0 || len(calls) == 0 {
-		toolInvokeMessageBuffer.WriteString("为查询到服务调用关系，服务调用拓扑为空")
-	} else {
-		toolInvokeMessageBuffer.WriteString("服务调用拓扑如下图所示：\n")
+	if len(nodes) > 0 {
+		for _, node := range nodes {
+			nodeRegister.Put(workspaceId, node.ID, node)
+		}
+	}
+
+	if len(calls) > 0 {
 		for _, call := range calls {
-			srcNode := GetNode(workspaceId, call.Source)
-			targetNode := GetNode(workspaceId, call.Target)
-			srcName := list_services.ServiceName(workspaceId, call.Source)
-			targetName := list_services.ServiceName(workspaceId, call.Target)
-			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceCallInfoPattern, srcName, srcNode.Type, targetName, targetNode.Type))
+			callRegister.Put(workspaceId, call.ID, call)
+		}
+	}
+
+	return
+}
+
+func convert2Message(workspaceId string, serviceTopoResp ServiceTopologyResponse) string {
+	nodeRegister, callRegister := convert2Tables(workspaceId, serviceTopoResp)
+
+	var toolInvokeMessageBuffer bytes.Buffer
+	if nodeRegister.Size() == 0 || callRegister.Size() == 0 {
+		toolInvokeMessageBuffer.WriteString("未查询到服务调用关系，服务调用拓扑为空")
+	} else {
+		toolInvokeMessageBuffer.WriteString("服务调用拓扑如下：\n")
+		for _, call := range serviceTopoResp.Topology.Calls {
+			srcNode, _ := nodeRegister.Get(workspaceId, call.Source)
+			tgtNode, _ := nodeRegister.Get(workspaceId, call.Target)
+			srcName := convertor.ConvertID2Name(call.Source)
+			tgtName := convertor.ConvertID2Name(call.Target)
+			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceCallInfoPattern, srcName, srcNode.Type, tgtName, tgtNode.Type))
 		}
 	}
 

@@ -3,6 +3,7 @@ package metrics_services
 import (
 	"beedance-mcp/api/tools/apm"
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
 	"beedance-mcp/pkg/table"
 	"beedance-mcp/pkg/timeutils"
@@ -38,7 +39,7 @@ func convert2Variables(request mcp.CallToolRequest) (ServiceMetricsVariables, er
 	variables.M0 = metricsM0Name
 	variables.M1 = metricsM1Name
 	variables.M2 = metricsM2Name
-	variables.IDs = list_services.ServiceIDs(workspaceId, serviceNames)
+	variables.IDs = list_services.ConvertServiceNames2IDs(request, workspaceId, serviceNames)
 	return variables, nil
 }
 
@@ -72,7 +73,7 @@ func convert2Table(serviceMetricsResp ServiceMetricsResponse) *table.Table[strin
 	return metricsRegister
 }
 
-func convert2Message(workspaceId string, serviceMetricsResp ServiceMetricsResponse) string {
+func convert2Message(serviceMetricsResp ServiceMetricsResponse) string {
 	metricsRegister := convert2Table(serviceMetricsResp)
 	ids := metricsRegister.Rows()
 
@@ -81,7 +82,7 @@ func convert2Message(workspaceId string, serviceMetricsResp ServiceMetricsRespon
 		toolInvokeMessageBuffer.WriteString("服务的应用性能指标信息如下：\n")
 		for _, id := range ids {
 			metrics := metricsRegister.Row(id)
-			svcName := list_services.ServiceName(workspaceId, id)
+			svcName := convertor.ConvertID2Name(id)
 			cpm, sla, rt := metrics[metricsM0Name], metrics[metricsM1Name], metrics[metricsM2Name]
 			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceMetricsInfoPattern, svcName, cpm, float64(sla)/float64(100), rt))
 		}

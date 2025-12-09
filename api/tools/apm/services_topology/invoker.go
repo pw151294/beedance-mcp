@@ -2,7 +2,6 @@ package services_topology
 
 import (
 	"beedance-mcp/api/tools/apm"
-	"beedance-mcp/api/tools/apm/list_services"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
 	"beedance-mcp/pkg/loggers"
@@ -23,7 +22,6 @@ func MetricsServiceToolSchema() mcp.Tool {
 
 func InvokeServicesTopologyTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// 1. 转换请求参数
-	list_services.InitServicesRegister(request)
 	variables, err := convert2TopoVariables(request)
 	if err != nil {
 		loggers.Error("convert to topo graph request variables failed", zap.Error(err), zap.Any("request", request))
@@ -41,7 +39,6 @@ func InvokeServicesTopologyTool(ctx context.Context, request mcp.CallToolRequest
 		loggers.Error("send graphql request failed", zap.Error(err), zap.Any("variables", variables), zap.Any("headers", headers))
 		return mcp.NewToolResultError("调用graphql接口失败：" + err.Error()), nil
 	}
-	topoRegister.refresh(variables.WorkspaceID, graphqlResp.Data)
 
 	// 3. 将工具调用的结果转换成白话文
 	loggers.Info("call graphql request success", zap.Any("graphqlResp", graphqlResp))

@@ -1,6 +1,8 @@
 package table
 
-import "sync"
+import (
+	"sync"
+)
 
 type Table[R comparable, C comparable, V any] struct {
 	data         map[R]map[C]V
@@ -57,6 +59,13 @@ func (t *Table[R, C, V]) Rows() []R {
 		keys = append(keys, r)
 	}
 	return keys
+}
+
+// Size 新增：返回当前表的行数
+func (t *Table[R, C, V]) Size() int {
+	t.RLock()
+	defer t.RUnlock()
+	return len(t.data)
 }
 
 func (t *Table[R, C, V]) Column(col C) map[R]V {
