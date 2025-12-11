@@ -1,7 +1,7 @@
 package list_services
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/internal/pkg/cache"
 	"beedance-mcp/pkg/loggers"
 	"bytes"
@@ -40,7 +40,7 @@ func ConvertServiceNames2IDs(request mcp.CallToolRequest, workspaceId string, se
 }
 
 func convert2Variables(request mcp.CallToolRequest) (ListServicesVariables, error) {
-	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
 		return ListServicesVariables{}, errors.New("请求头未携带工作空间ID")

@@ -1,7 +1,7 @@
 package services_topology
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
 	"beedance-mcp/pkg/loggers"
@@ -15,8 +15,8 @@ func ServicesTopologyToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		serviceTopologyToolName,
 		mcp.WithDescription(serviceTopologyToolDesc),
-		mcp.WithString(apm.StartParamName, mcp.Description(apm.StartParamDesc)),
-		mcp.WithArray(apm.ServiceNamesParamName, mcp.Required(), mcp.Description(apm.ServiceNamesParamDesc)),
+		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
+		mcp.WithArray(tools.ServiceNamesParamName, mcp.Required(), mcp.Description(tools.ServiceNamesParamDesc)),
 	)
 }
 

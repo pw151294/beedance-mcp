@@ -1,7 +1,7 @@
 package timeutils
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"time"
 )
 
@@ -57,14 +57,14 @@ func parseStep(start *string) Step {
 	return DayStep
 }
 
-func BuildDuration(start string) (apm.Duration, error) {
+func BuildDuration(start string) (tools.Duration, error) {
 	step := parseStep(&start)
 	end := time.Now()
 
 	// 根据Step对start还有end进行格式化：
 	startTime, err := time.ParseInLocation(time.DateTime, start, time.Local)
 	if err != nil {
-		return apm.Duration{}, err
+		return tools.Duration{}, err
 	}
 
 	var layout string
@@ -79,7 +79,7 @@ func BuildDuration(start string) (apm.Duration, error) {
 		layout = "2006-01-02"
 	}
 
-	duration := apm.Duration{}
+	duration := tools.Duration{}
 	duration.Start = startTime.Format(layout)
 	duration.End = end.Format(layout)
 	duration.Step = string(step)

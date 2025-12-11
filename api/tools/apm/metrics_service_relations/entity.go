@@ -1,14 +1,17 @@
 package metrics_service_relations
 
-import "beedance-mcp/api/tools/apm"
+import (
+	"beedance-mcp/api/tools"
+	"beedance-mcp/api/tools/apm"
+)
 
 // ServiceRelationMetricsVariables 查询服务关系客户端指标的变量
 type ServiceRelationMetricsVariables struct {
-	WorkspaceID string       `json:"-"`
-	Duration    apm.Duration `json:"duration"`
-	IDs         []string     `json:"ids"`
-	M0          string       `json:"m0"` // service_relation_client_cpm
-	M1          string       `json:"m1"` // service_relation_client_resp_time
+	WorkspaceID string         `json:"-"`
+	Duration    tools.Duration `json:"duration"`
+	IDs         []string       `json:"ids"`
+	M0          string         `json:"m0"` // service_relation_client_cpm
+	M1          string         `json:"m1"` // service_relation_client_resp_time
 }
 
 // ServiceRelationClientMetricsResponse 查询服务关系指标的响应

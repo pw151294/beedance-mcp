@@ -1,7 +1,7 @@
 package metrics_services
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/cache"
 	"beedance-mcp/internal/pkg/graphql"
@@ -34,11 +34,11 @@ func TestGetMetricsServices(t *testing.T) {
 		Header:  make(map[string][]string),
 		Params:  mcp.CallToolParams{},
 	}
-	request.Header.Set(apm.WorkspaceIdHeaderName, workspaceId)
-	request.Header.Set(apm.TokenHeaderName, token)
+	request.Header.Set(tools.WorkspaceIdHeaderName, workspaceId)
+	request.Header.Set(tools.TokenHeaderName, token)
 	request.Header.Set("Content-Type", "application/json")
 	arguments := make(map[string]any)
-	arguments[apm.ServiceNamesParamName] = []string{"nodeA", "nodeB", "nodeC", "nodeD"}
+	arguments[tools.ServiceNamesParamName] = []string{"nodeA", "nodeB", "nodeC", "nodeD"}
 	request.Params.Arguments = arguments
 
 	_, err := InvokeMetricsServicesTool(context.Background(), request)

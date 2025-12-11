@@ -1,7 +1,7 @@
 package httputils
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/pkg/loggers"
 	"errors"
 
@@ -10,12 +10,12 @@ import (
 )
 
 func BuildHeaders(request mcp.CallToolRequest) (map[string]string, error) {
-	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
 		return nil, errors.New("请求头未携带工作空间ID")
 	}
-	token := request.Header.Get(apm.TokenHeaderName)
+	token := request.Header.Get(tools.TokenHeaderName)
 	if token == "" {
 		loggers.Error("parse token from header failed", zap.Any("headers", request.Header))
 		return nil, errors.New("请求头未携带Token认证令牌")

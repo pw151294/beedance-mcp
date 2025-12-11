@@ -1,6 +1,8 @@
 package services_topology
 
-import "beedance-mcp/api/tools/apm"
+import (
+	"beedance-mcp/api/tools"
+)
 
 // Node 拓扑节点
 type Node struct {
@@ -25,9 +27,9 @@ type Topology struct {
 }
 
 type ServiceTopologyVariables struct {
-	WorkspaceID string       `json:"-"`
-	IDs         []string     `json:"serviceIds"`
-	Duration    apm.Duration `json:"duration"`
+	WorkspaceID string         `json:"-"`
+	IDs         []string       `json:"serviceIds"`
+	Duration    tools.Duration `json:"duration"`
 }
 
 type ServiceTopologyResponse struct {

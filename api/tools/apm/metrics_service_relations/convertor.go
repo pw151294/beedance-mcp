@@ -1,7 +1,7 @@
 package metrics_service_relations
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/api/tools/apm/services_topology"
 	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
@@ -16,17 +16,17 @@ import (
 )
 
 func convert2Variables(request mcp.CallToolRequest) (ServiceRelationMetricsVariables, error) {
-	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
 		return ServiceRelationMetricsVariables{}, errors.New("请求头未携带工作空间ID")
 	}
-	serviceNames, err := request.RequireStringSlice(apm.ServiceNamesParamName)
+	serviceNames, err := request.RequireStringSlice(tools.ServiceNamesParamName)
 	if err != nil {
 		loggers.Error("parse serviceNames failed", zap.Error(err))
 		return ServiceRelationMetricsVariables{}, fmt.Errorf("服务名称列表参数错误：%w", err)
 	}
-	start := request.GetString(apm.StartParamName, "")
+	start := request.GetString(tools.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
 		loggers.Error("build duration failed", zap.String("start", start), zap.Error(err))
@@ -85,7 +85,7 @@ func convert2Table(clientResp ServiceRelationClientMetricsResponse, serverResp S
 }
 
 func convert2Message(request mcp.CallToolRequest, clientResp ServiceRelationClientMetricsResponse, serverResp ServiceRelationServerMetricsResponse) string {
-	workspaceId, _ := request.RequireString(apm.WorkspaceIdHeaderName)
+	workspaceId, _ := request.RequireString(tools.WorkspaceIdHeaderName)
 	metricsRegister := convert2Table(clientResp, serverResp)
 	id2Node := services_topology.CollectId2Node(request, workspaceId)
 

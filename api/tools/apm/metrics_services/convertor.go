@@ -1,7 +1,7 @@
 package metrics_services
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/api/tools/apm/list_services"
 	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
@@ -16,17 +16,17 @@ import (
 )
 
 func convert2Variables(request mcp.CallToolRequest) (ServiceMetricsVariables, error) {
-	workspaceId := request.Header.Get(apm.WorkspaceIdHeaderName)
+	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from header failed", zap.Any("headers", request.Header))
 		return ServiceMetricsVariables{}, errors.New("请求头未携带工作空间ID")
 	}
-	serviceNames, err := request.RequireStringSlice(apm.ServiceNamesParamName)
+	serviceNames, err := request.RequireStringSlice(tools.ServiceNamesParamName)
 	if err != nil {
 		loggers.Error("parse serviceNames failed", zap.Error(err))
 		return ServiceMetricsVariables{}, fmt.Errorf("服务名称列表参数错误：%w", err)
 	}
-	start := request.GetString(apm.StartParamName, "")
+	start := request.GetString(tools.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
 		loggers.Error("build duration failed", zap.String("start", start), zap.Error(err))

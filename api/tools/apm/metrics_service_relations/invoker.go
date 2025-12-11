@@ -1,7 +1,7 @@
 package metrics_service_relations
 
 import (
-	"beedance-mcp/api/tools/apm"
+	"beedance-mcp/api/tools"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/httputils"
 	"beedance-mcp/pkg/loggers"
@@ -15,8 +15,8 @@ func MetricsServiceRelationToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		metricsServiceRelationsToolName,
 		mcp.WithDescription(metricsServiceRelationsToolDesc),
-		mcp.WithString(apm.StartParamName, mcp.Description(apm.StartParamDesc)),
-		mcp.WithArray(apm.ServiceNamesParamName, mcp.Required(), mcp.Description(apm.ServiceNamesParamDesc)),
+		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
+		mcp.WithArray(tools.ServiceNamesParamName, mcp.Required(), mcp.Description(tools.ServiceNamesParamDesc)),
 	)
 }
 
