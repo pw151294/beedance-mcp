@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1MjUwNjg4LCJpYXQiOjE3NjUyNDcwODh9.KxpWPCVGiszHcVSzVDFNqI19V50L09ACHZZpEp6wtN0"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1NDU1MTA1LCJpYXQiOjE3NjU0NTE1MDV9.L4doczIUyCGaHGwdpt_2fAd4YiMYfru3T40o_uy9P4Y"
 )
 
 func TestGetMetricsServices(t *testing.T) {
@@ -38,7 +38,7 @@ func TestGetMetricsServices(t *testing.T) {
 	request.Header.Set(apm.TokenHeaderName, token)
 	request.Header.Set("Content-Type", "application/json")
 	arguments := make(map[string]any)
-	arguments[apm.ServiceNamesParamName] = []string{"st-logplatform-service", "auth"}
+	arguments[apm.ServiceNamesParamName] = []string{"nodeA", "nodeB", "nodeC", "nodeD"}
 	request.Params.Arguments = arguments
 
 	_, err := InvokeMetricsServicesTool(context.Background(), request)

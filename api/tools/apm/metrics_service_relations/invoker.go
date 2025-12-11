@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func ServiceRelationMetricsToolSchema() mcp.Tool {
+func MetricsServiceRelationToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		metricsServiceRelationsToolName,
 		mcp.WithDescription(metricsServiceRelationsToolDesc),

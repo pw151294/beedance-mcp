@@ -47,7 +47,7 @@ func main() {
 	s.AddTool(list_services.ListServicesToolSchema(), list_services.InvokeListServicesTool)
 	s.AddTool(metrics_services.MetricsServiceToolSchema(), metrics_services.InvokeMetricsServicesTool)
 	s.AddTool(services_topology.ServicesTopologyToolSchema(), services_topology.InvokeServicesTopologyTool)
-	s.AddTool(metrics_service_relations.ServiceRelationMetricsToolSchema(), metrics_service_relations.InvokeMetricsServiceRelationTool)
+	s.AddTool(metrics_service_relations.MetricsServiceRelationToolSchema(), metrics_service_relations.InvokeMetricsServiceRelationTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)

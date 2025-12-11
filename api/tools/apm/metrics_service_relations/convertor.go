@@ -101,12 +101,9 @@ func convert2Message(request mcp.CallToolRequest, clientResp ServiceRelationClie
 			srcName, tgtName := convertor.ConvertID2Name(srcId), convertor.ConvertID2Name(tgtId)
 
 			clientCpm, _ := metricsRegister.Get(callId, metricsClientM0Name)
-			clientRt, _ := metricsRegister.Get(callId, metricsClientM1Name)
-			serverCpm, _ := metricsRegister.Get(callId, metricsServerM0Name)
 			serverRt, _ := metricsRegister.Get(callId, metricsServerM1Name)
 			// todo 需要明确client/server数据的含义
-			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceRelationInfoPattern, srcName, tgtName, srcNode.Type, tgtNode.Type,
-				clientCpm, clientRt, serverCpm, serverRt))
+			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceRelationInfoPattern, srcName, tgtName, srcNode.Type, tgtNode.Type, clientCpm, serverRt))
 		}
 	}
 

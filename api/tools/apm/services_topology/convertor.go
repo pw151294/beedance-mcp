@@ -69,7 +69,6 @@ func ConvertServiceNames2CallIDs(request mcp.CallToolRequest, workspaceId string
 		if srcOk || tgtOk {
 			callIdSet[id] = struct{}{}
 		}
-		callIdSet[id] = struct{}{}
 	}
 
 	callIds := make([]string, 0, len(callIdSet))
