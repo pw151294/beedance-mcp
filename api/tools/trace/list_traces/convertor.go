@@ -3,6 +3,7 @@ package list_traces
 import (
 	"beedance-mcp/api/tools"
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/pkg/loggers"
 	"beedance-mcp/pkg/timeutils"
 	"bytes"
@@ -50,14 +51,6 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	return ListTracesVariable{Condition: condition}, nil
 }
 
-func convertBool2Desc(isError bool) string {
-	if isError {
-		return "失败"
-	} else {
-		return "成功"
-	}
-}
-
 func convert2EndpointMessage(endPoints []string) string {
 	if len(endPoints) == 0 {
 		return "未发现端点"
@@ -82,7 +75,7 @@ func convert2Message(tracesData TracesData) string {
 	} else {
 		for _, trace := range traces {
 			endpointMessage := convert2EndpointMessage(trace.EndpointNames)
-			traceState := convertBool2Desc(trace.IsError)
+			traceState := convertor.ConvertBool2Desc(trace.IsError)
 			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(traceInfoPattern, endpointMessage, trace.Duration, traceState))
 		}
 	}

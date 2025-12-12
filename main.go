@@ -5,6 +5,7 @@ import (
 	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/api/tools/apm/services_topology"
+	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/graphql"
@@ -52,6 +53,7 @@ func main() {
 
 	// 添加trace工具
 	s.AddTool(list_traces.ListServicesToolSchema(), list_traces.InvokeListTracesTool)
+	s.AddTool(detail_trace.DetailTraceToolSchema(), detail_trace.InvokeDetailTraceTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)

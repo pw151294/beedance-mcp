@@ -41,3 +41,19 @@ func ConvertCallID2ServiceIDs(callID string) (string, string) {
 	}
 	return svcIds[0], svcIds[1]
 }
+
+func ConvertServiceCode2Name(serviceCode string) string {
+	if strings.HasSuffix(serviceCode, splitter) {
+		idx := strings.Index(serviceCode, splitter)
+		return serviceCode[:idx]
+	}
+	return serviceCode
+}
+
+func ConvertBool2Desc(isError bool) string {
+	if isError {
+		return "失败"
+	} else {
+		return "成功"
+	}
+}
