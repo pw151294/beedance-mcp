@@ -12,7 +12,9 @@ const TokenHeaderName = "Token"
 
 const (
 	ServiceNamesParamName = "serviceNames"
+	ServiceNamesParamDesc = "服务名称列表"
+	ServiceNameParamName  = "serviceName"
+	ServiceNameParamDesc  = "服务名称"
 	StartParamName        = "start"
 	StartParamDesc        = "查询时间范围的起始时间，遵循'YYYY-MM-DD HH::mm:ss'的格式"
-	ServiceNamesParamDesc = "服务名称列表"
 )

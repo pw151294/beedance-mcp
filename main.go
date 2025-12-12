@@ -5,6 +5,7 @@ import (
 	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/api/tools/apm/services_topology"
+	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/loggers"
@@ -48,6 +49,9 @@ func main() {
 	s.AddTool(metrics_services.MetricsServiceToolSchema(), metrics_services.InvokeMetricsServicesTool)
 	s.AddTool(services_topology.ServicesTopologyToolSchema(), services_topology.InvokeServicesTopologyTool)
 	s.AddTool(metrics_service_relations.MetricsServiceRelationToolSchema(), metrics_service_relations.InvokeMetricsServiceRelationTool)
+
+	// 添加trace工具
+	s.AddTool(list_traces.ListServicesToolSchema(), list_traces.InvokeListTracesTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)
