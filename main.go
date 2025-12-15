@@ -2,6 +2,7 @@ package main
 
 import (
 	"beedance-mcp/api/tools/apm/list_services"
+	"beedance-mcp/api/tools/apm/metrics_endpoints"
 	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/api/tools/apm/services_topology"
@@ -50,6 +51,7 @@ func main() {
 	s.AddTool(metrics_services.MetricsServiceToolSchema(), metrics_services.InvokeMetricsServicesTool)
 	s.AddTool(services_topology.ServicesTopologyToolSchema(), services_topology.InvokeServicesTopologyTool)
 	s.AddTool(metrics_service_relations.MetricsServiceRelationToolSchema(), metrics_service_relations.InvokeMetricsServiceRelationTool)
+	s.AddTool(metrics_endpoints.MetricsEndpointsToolSchema(), metrics_endpoints.InvokeMetricsEndpointsTool)
 
 	// 添加trace工具
 	s.AddTool(list_traces.ListServicesToolSchema(), list_traces.InvokeListTracesTool)

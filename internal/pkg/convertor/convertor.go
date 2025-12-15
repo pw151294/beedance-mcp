@@ -42,6 +42,20 @@ func ConvertCallID2ServiceIDs(callID string) (string, string) {
 	return svcIds[0], svcIds[1]
 }
 
+func ConvertServiceID2Code(serviceId string) string {
+	pairs := strings.Split(serviceId, ".")
+	if len(pairs) != 2 {
+		loggers.Warn("invalid service id format", zap.String("serviceId", serviceId))
+		return ""
+	}
+	serviceNameBytes, err := decodeBase64(pairs[0])
+	if err != nil {
+		loggers.Warn("decode serviceId failed", zap.String("serviceId", serviceId))
+		return ""
+	}
+	return string(serviceNameBytes)
+}
+
 func ConvertServiceCode2Name(serviceCode string) string {
 	if strings.HasSuffix(serviceCode, splitter) {
 		idx := strings.Index(serviceCode, splitter)
@@ -56,4 +70,8 @@ func ConvertBool2Desc(isError bool) string {
 	} else {
 		return "成功"
 	}
+}
+
+func ConvertSlaVal2Rate(sla int64) float64 {
+	return float64(sla) / float64(100)
 }
