@@ -15,7 +15,7 @@ func decodeBase64(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
 }
 
-func ConvertID2Name(serviceID string) string {
+func ConvertServiceID2Name(serviceID string) string {
 	// 示例："YXV0aHx0b2tfMzY2NWQ2ODhiMzI4NGZhMzllYWNlNzE3NWNiMGRlMTR8.1" 只需要解码.之前的内容即可
 	parts := strings.SplitN(serviceID, ".", 2)
 	base64Part := parts[0]

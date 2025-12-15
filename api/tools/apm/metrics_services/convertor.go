@@ -82,7 +82,7 @@ func convert2Message(serviceMetricsResp ServiceMetricsResponse) string {
 		toolInvokeMessageBuffer.WriteString("服务的应用性能指标信息如下：\n")
 		for _, id := range ids {
 			metrics := metricsRegister.Row(id)
-			svcName := convertor.ConvertID2Name(id)
+			svcName := convertor.ConvertServiceID2Name(id)
 			cpm, sla, rt := metrics[metricsM0Name], metrics[metricsM1Name], metrics[metricsM2Name]
 			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceMetricsInfoPattern, svcName, cpm, float64(sla)/float64(100), rt))
 		}

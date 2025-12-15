@@ -98,7 +98,7 @@ func convert2Message(request mcp.CallToolRequest, clientResp ServiceRelationClie
 		for _, callId := range callIds {
 			srcId, tgtId := convertor.ConvertCallID2ServiceIDs(callId)
 			srcNode, tgtNode := id2Node[srcId], id2Node[tgtId]
-			srcName, tgtName := convertor.ConvertID2Name(srcId), convertor.ConvertID2Name(tgtId)
+			srcName, tgtName := convertor.ConvertServiceID2Name(srcId), convertor.ConvertServiceID2Name(tgtId)
 
 			clientCpm, _ := metricsRegister.Get(callId, metricsClientM0Name)
 			serverRt, _ := metricsRegister.Get(callId, metricsServerM1Name)

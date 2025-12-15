@@ -136,8 +136,8 @@ func convert2Message(workspaceId string, serviceTopoResp ServiceTopologyResponse
 		for _, call := range serviceTopoResp.Topology.Calls {
 			srcNode, _ := nodeRegister.Get(workspaceId, call.Source)
 			tgtNode, _ := nodeRegister.Get(workspaceId, call.Target)
-			srcName := convertor.ConvertID2Name(call.Source)
-			tgtName := convertor.ConvertID2Name(call.Target)
+			srcName := convertor.ConvertServiceID2Name(call.Source)
+			tgtName := convertor.ConvertServiceID2Name(call.Target)
 			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(serviceCallInfoPattern, srcName, srcNode.Type, tgtName, tgtNode.Type))
 		}
 	}

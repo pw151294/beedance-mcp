@@ -85,7 +85,7 @@ func convertEndpointMetric2Message(metricName string, metricVal MetricValue) str
 		loggers.Warn("invalid endpoint id format", zap.String("endpointId", metricVal.Id))
 		return ""
 	}
-	serviceName := convertor.ConvertID2Name(pairs[0])
+	serviceName := convertor.ConvertServiceID2Name(pairs[0])
 	if serviceName == "" {
 		loggers.Warn("invalid service id format", zap.String("serviceId", pairs[0]))
 	}
