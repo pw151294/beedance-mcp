@@ -4,7 +4,7 @@ const listTracesToolName = "list_traces"
 const listTracesToolDesc = "查询服务所在链路信息"
 
 const traceStateParamName = "state"
-const traceStateParamDesc = "查询链路状态：成功SUCEESS/失败ERROR/所有ALL"
+const traceStateParamDesc = "查询链路状态：成功SUCCESS/失败ERROR/所有ALL"
 
 const queryOrder = "BY_DURATION"
 const pageNum = 1

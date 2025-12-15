@@ -37,12 +37,40 @@ func convertTags2Message(tags []Tag) string {
 	return strings.TrimSuffix(tagMessage, "；") + "]"
 }
 
+func convertLogs2Message(logs []Log) string {
+	if len(logs) == 0 {
+		return ""
+	}
+
+	errorLogs := make([]string, 0, 0)
+	for _, log := range logs {
+		data := log.Data
+		if len(data) == 0 {
+			continue
+		}
+		logTags := make(map[string]string)
+		for _, tag := range data {
+			logTags[tag.Key] = tag.Value
+		}
+		if logTags[eventPropertyName] != "error" {
+			continue
+		}
+		message := logTags[messagePropertyName]
+		stack := logTags[stackPropertyName]
+		errorKind := logTags[errorKindPropertyName]
+		errorLogs = append(errorLogs, fmt.Sprintf(errorLogInfoPattern, len(errorLogs)+1, errorKind, message, stack[:stackLengthThreshold]))
+	}
+
+	return strings.Join(errorLogs, "；")
+}
+
 func convertSpan2Message(span Span) string {
 	serviceName := convertor.ConvertServiceCode2Name(span.ServiceCode)
 	duration := span.EndTime - span.StartTime
 	spanState := convertor.ConvertBool2Desc(span.IsError)
 	tagMessage := convertTags2Message(span.Tags)
-	return fmt.Sprintf(spanInfoPattern, serviceName, span.EndpointName, duration, span.Component, spanState, span.Layer, tagMessage)
+	logMessage := convertLogs2Message(span.Logs)
+	return fmt.Sprintf(spanInfoPattern, serviceName, span.EndpointName, duration, span.Component, spanState, span.Layer, tagMessage, logMessage)
 }
 
 func convert2Message(traceDetail TraceDetail) string {

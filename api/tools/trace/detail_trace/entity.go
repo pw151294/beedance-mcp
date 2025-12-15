@@ -21,12 +21,20 @@ type Span struct {
 	IsError             bool          `json:"isError"`
 	Layer               string        `json:"layer"`
 	Tags                []Tag         `json:"tags"`
-	Logs                []interface{} `json:"logs"`
-	AttachedEvents      []interface{} `json:"attachedEvents"`
+	Logs                []Log         `json:"logs"`
 }
 
 type TraceDetail struct {
 	Spans []Span `json:"spans"`
+}
+
+type Log struct {
+	Time int64
+	Data []LogTag
+}
+type LogTag struct {
+	Key   string
+	Value string
 }
 
 type Tag struct {
