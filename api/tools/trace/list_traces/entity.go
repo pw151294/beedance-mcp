@@ -13,6 +13,7 @@ type Condition struct {
 	QueryOrder    string         `json:"queryOrder"`
 	Paging        Paging         `json:"paging"`
 	ServiceId     string         `json:"serviceId"`
+	EndpointId    string         `json:"endpointId,omitempty"`
 }
 
 type ListTracesVariable struct {

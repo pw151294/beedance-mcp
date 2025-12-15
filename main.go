@@ -9,6 +9,7 @@ import (
 	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/configs"
+	"beedance-mcp/internal/pkg/cache"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/loggers"
 	"flag"
@@ -36,6 +37,7 @@ func main() {
 		log.Fatalf("init logger err: %v", err)
 	}
 	graphql.InitClient()
+	cache.InitCacheManager()
 
 	// 创建 MCP 服务器
 	s := server.NewMCPServer(

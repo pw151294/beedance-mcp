@@ -10,9 +10,21 @@ import (
 
 const splitter = "|"
 const callSplitter = "-"
+const endpointSplitter = "_"
 
 func decodeBase64(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
+}
+
+func encodeBase64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)
+}
+
+func ConvertServiceIDAndEndpointName2EndpointID(serviceID, endpointName string) string {
+	if endpointName == "" {
+		return ""
+	}
+	return serviceID + endpointSplitter + encodeBase64([]byte(endpointName))
 }
 
 func ConvertServiceID2Name(serviceID string) string {

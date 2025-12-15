@@ -18,6 +18,7 @@ func ListServicesToolSchema() mcp.Tool {
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
 		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
 		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
+		mcp.WithString(endpointNameParamName, mcp.Description(endpointNameParamDesc)),
 	)
 }
 

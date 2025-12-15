@@ -1,7 +1,7 @@
 package metrics_endpoints
 
 const metricsEndpointsToolName = "metrics_endpoints"
-const metricsEndpointsToolDesc = "查看负载、响应时间、成功率前topN个元素"
+const metricsEndpointsToolDesc = "查看服务所在接口的负载、响应时间、成功率指标的topN个元素"
 
 const topNParamName = "topN"
 const topNParamDesc = "查询的元素数量"

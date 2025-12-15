@@ -3,6 +3,8 @@ package list_traces
 const listTracesToolName = "list_traces"
 const listTracesToolDesc = "查询服务所在链路信息"
 
+const endpointNameParamName = "endpointName"
+const endpointNameParamDesc = "接口名称"
 const traceStateParamName = "state"
 const traceStateParamDesc = "查询链路状态：成功SUCCESS/失败ERROR/所有ALL"
 

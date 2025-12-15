@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1NTMxODk1LCJpYXQiOjE3NjU1MjgyOTV9.B-PE-UwISga7Sb0gfJhqygpXuzNkAWcXnQwSrDeOueI"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1ODE1NjIyLCJpYXQiOjE3NjU4MTIwMjJ9.0JkhGATQWbJTzA2Kj_stFzp7psXsXPQvMBxNYd8Fl00"
 )
 
 func TestInvokeListTracesTool(t *testing.T) {
@@ -40,6 +40,7 @@ func TestInvokeListTracesTool(t *testing.T) {
 	arguments := make(map[string]any)
 	//arguments[tools.StartParamName] = "2025-12-12 14:00:00"
 	arguments[tools.ServiceNameParamName] = "st-logplatform-service"
+	arguments[endpointNameParamName] = "SpringScheduled/com.iflytek.itsc.observability.logplatform.scheduler.LogPlatformCacheScheduler.alarmRuleLoad"
 	arguments[traceStateParamName] = "ALL"
 	request.Params.Arguments = arguments
 

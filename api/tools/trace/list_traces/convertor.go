@@ -30,6 +30,8 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	}
 	serviceIds := list_services.ConvertServiceNames2IDs(request, workspaceId, []string{serviceName})
 	serviceId := serviceIds[0]
+	endpointName := request.GetString(endpointNameParamName, "")
+	endpointId := convertor.ConvertServiceIDAndEndpointName2EndpointID(serviceId, endpointName)
 
 	// 2.开始时间 链路状态
 	start := request.GetString(tools.StartParamName, "")
@@ -44,6 +46,7 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	condition := Condition{}
 	condition.TraceState = traceState
 	condition.ServiceId = serviceId
+	condition.EndpointId = endpointId
 	condition.QueryOrder = queryOrder
 	condition.QueryDuration = duration
 	condition.Paging = Paging{PageNum: pageNum, PageSize: pageSize}
