@@ -13,7 +13,7 @@ const stackPropertyName = "stack"
 const errorLogInfoPattern = "错误%d：错误类型：%s；错误信息：%s；错误堆栈：%s；"
 const stackLengthThreshold = 100
 
-const spanInfoPattern = "应用：%s；接口：%s；耗时：%d毫秒；组件：%s；状态：%s；层级：%s；标记：%s；日志：%s\n"
+const spanInfoPattern = "应用：%s；接口：%s；耗时：%d毫秒；组件：%s；状态：%s；层级：%s；属性：%s；日志：%s\n"
 const detailTraceGraphqlQuery = `query queryTrace($traceId: ID!) {
   trace: queryTrace(traceId: $traceId) {
     spans {

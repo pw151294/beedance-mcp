@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func ListServicesToolSchema() mcp.Tool {
+func ListTracesToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		listTracesToolName,
 		mcp.WithDescription(listTracesToolDesc),

@@ -56,7 +56,7 @@ func main() {
 	s.AddTool(metrics_endpoints.MetricsEndpointsToolSchema(), metrics_endpoints.InvokeMetricsEndpointsTool)
 
 	// 添加trace工具
-	s.AddTool(list_traces.ListServicesToolSchema(), list_traces.InvokeListTracesTool)
+	s.AddTool(list_traces.ListTracesToolSchema(), list_traces.InvokeListTracesTool)
 	s.AddTool(detail_trace.DetailTraceToolSchema(), detail_trace.InvokeDetailTraceTool)
 
 	// 创建并启动 HTTP 服务器

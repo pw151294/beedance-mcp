@@ -54,19 +54,27 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	return ListTracesVariable{Condition: condition}, nil
 }
 
-func convert2EndpointMessage(endPoints []string) string {
+func convertEndpoints2Message(endPoints []string) string {
 	if len(endPoints) == 0 {
-		return "未发现端点"
+		return "未发现任何接口"
 	}
 
 	var endpointMessageBuffer bytes.Buffer
 	endpointMessageBuffer.WriteString("[")
-	for i, endPnt := range endPoints {
-		endpointMessageBuffer.WriteString(fmt.Sprintf("端点%d：%s；", i+1, endPnt))
+	endpointMessageBuffer.WriteString(strings.Join(endPoints, "；"))
+	endpointMessageBuffer.WriteString("]")
+	return endpointMessageBuffer.String()
+}
+func convertTraceIds2Message(traceIds []string) string {
+	if len(traceIds) == 0 {
+		return "链路ID为空"
 	}
-	endpointMessage := endpointMessageBuffer.String()
-	endpointMessage = strings.TrimSuffix(endpointMessage, "；")
-	return endpointMessage + "]"
+
+	var traceIdMessageBuffer bytes.Buffer
+	traceIdMessageBuffer.WriteString("[")
+	traceIdMessageBuffer.WriteString(strings.Join(traceIds, ";"))
+	traceIdMessageBuffer.WriteString("]")
+	return traceIdMessageBuffer.String()
 }
 
 func convert2Message(tracesData TracesData) string {
@@ -77,9 +85,10 @@ func convert2Message(tracesData TracesData) string {
 		toolInvokeMessageBuffer.WriteString("未查询到服务的任何链路信息")
 	} else {
 		for _, trace := range traces {
-			endpointMessage := convert2EndpointMessage(trace.EndpointNames)
+			traceIdMessage := convertTraceIds2Message(trace.TraceIds)
+			endpointsMessage := convertEndpoints2Message(trace.EndpointNames)
 			traceState := convertor.ConvertBool2Desc(trace.IsError)
-			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(traceInfoPattern, endpointMessage, trace.Duration, traceState))
+			toolInvokeMessageBuffer.WriteString(fmt.Sprintf(traceInfoPattern, traceIdMessage, endpointsMessage, trace.Duration, traceState))
 		}
 	}
 

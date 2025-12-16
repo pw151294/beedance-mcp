@@ -12,7 +12,7 @@ const queryOrder = "BY_DURATION"
 const pageNum = 1
 const pageSize = 100
 
-const traceInfoPattern = "端点：%s；总持续时长：%d毫秒；链路状态：%s\n"
+const traceInfoPattern = "链路ID：%s；接口：%s；总持续时长：%d毫秒；链路状态：%s\n"
 const listTracesGraphqlQuery = `query queryTraces($condition: TraceQueryCondition) {
   data: queryBasicTraces(condition: $condition) {
     traces {

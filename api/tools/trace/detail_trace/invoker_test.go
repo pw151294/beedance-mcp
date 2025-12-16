@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1NzY5NTc3LCJpYXQiOjE3NjU3NjU5Nzd9.v_5zAZ-NFx-ViFXlMrjGiBfveiwOh-lYqj3tCzvBTOQ"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1ODkzOTQzLCJpYXQiOjE3NjU4OTAzNDN9.1as_WR-TKdTrqCbByQfm_nZ24aQ4UQ5xtYOjuyc8URk"
 )
 
 func TestInvokeDetailTraceTool(t *testing.T) {
@@ -38,7 +38,7 @@ func TestInvokeDetailTraceTool(t *testing.T) {
 	request.Header.Set(tools.TokenHeaderName, token)
 	request.Header.Set("Content-Type", "application/json")
 	arguments := make(map[string]any)
-	arguments[traceIDParamName] = "fc19534e3bbb43dfab67b77a1ba0cd30.90.17657622932368209"
+	arguments[traceIDParamName] = "fc19534e3bbb43dfab67b77a1ba0cd30.96.17658928428474411"
 	request.Params.Arguments = arguments
 
 	_, err := InvokeDetailTraceTool(context.Background(), request)
