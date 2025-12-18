@@ -18,7 +18,6 @@ func DetailTraceToolSchema() mcp.Tool {
 		detailTraceToolName,
 		mcp.WithDescription(detailTraceToolDesc),
 		mcp.WithString(traceIDParamName, mcp.Required(), mcp.Description(traceIDParamDesc)),
-		mcp.WithOutputSchema[DetailTraceResponse](),
 	)
 }
 
@@ -27,7 +26,6 @@ func DetailTracesToolSchema() mcp.Tool {
 		detailTracesToolName,
 		mcp.WithDescription(detailTracesToolDesc),
 		mcp.WithArray(traceIDsParamName, mcp.Required(), mcp.Description(traceIDsParamDesc)),
-		mcp.WithOutputSchema[[]DetailTraceResponse](),
 	)
 }
 
@@ -56,7 +54,7 @@ func InvokeDetailTraceTool(ctx context.Context, request mcp.CallToolRequest) (*m
 	loggers.Info("trace detail", zap.Any("trace detail", traceDetail))
 	message := convert2Message(traceDetail.TraceDetail)
 	loggers.Info("tool invoke success", zap.String("tool invoke message", message))
-	return mcp.NewToolResultStructured(traceDetail, message), nil
+	return mcp.NewToolResultText(message), nil
 }
 
 func InvokeDetailTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -111,5 +109,5 @@ func InvokeDetailTracesTool(ctx context.Context, request mcp.CallToolRequest) (*
 	loggers.Info("detail traces", zap.Any("detail traces", resps))
 	message := toolInvokeMessageBuffer.String()
 	loggers.Info("tool invoke success", zap.String("message", message))
-	return mcp.NewToolResultStructured(resps, message), nil
+	return mcp.NewToolResultText(message), nil
 }

@@ -24,7 +24,6 @@ func ListTracesToolSchema() mcp.Tool {
 		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
 		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
 		mcp.WithString(endpointNameParamName, mcp.Description(endpointNameParamDesc)),
-		mcp.WithOutputSchema[ListTracesResponse](),
 	)
 }
 
@@ -62,7 +61,7 @@ func InvokeListTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mc
 	loggers.Info("list traces response", zap.Any("list traces response", listTracesResp))
 	message := convert2Message(listTracesResp.Data)
 	loggers.Info("tool invoke success", zap.Any("message", message))
-	return mcp.NewToolResultStructured(listTracesResp, message), nil
+	return mcp.NewToolResultText(message), nil
 }
 
 // EndpointsTracesToolSchema --- endpoints_traces
@@ -74,7 +73,6 @@ func EndpointsTracesToolSchema() mcp.Tool {
 		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
 		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
 		mcp.WithArray(endpointNamesParamName, mcp.Required(), mcp.Description(endpointNamesParamDesc)),
-		mcp.WithOutputSchema[[]ListTracesResponse](),
 	)
 }
 
@@ -134,5 +132,5 @@ func InvokeEndpointsTracesTool(ctx context.Context, request mcp.CallToolRequest)
 	loggers.Info("endpoints traces resp", zap.Any("response", resps))
 	message := toolInvokeMessageBuffer.String()
 	loggers.Info("endpoint traces tool invoke success", zap.String("message", message))
-	return mcp.NewToolResultStructured(resps, message), nil
+	return mcp.NewToolResultText(message), nil
 }

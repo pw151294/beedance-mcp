@@ -72,7 +72,7 @@ func TestInvokeEndpointsTracesTool(t *testing.T) {
 	arguments := make(map[string]any)
 	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
 	arguments[tools.ServiceNameParamName] = "auth"
-	arguments[endpointNamesParamName] = []string{"POST:/refreshToken"}
+	arguments[endpointNamesParamName] = []string{"/auth/authChange"}
 	arguments["state"] = "ERROR"
 	request.Params.Arguments = arguments
 
