@@ -10,7 +10,7 @@ const traceStateParamDesc = "查询链路状态：成功SUCCESS/失败ERROR/所�
 
 const queryOrder = "BY_DURATION"
 const pageNum = 1
-const pageSize = 100
+const pageSize = 10
 
 const traceInfoPattern = "链路ID：%s；接口：%s；总持续时长：%d毫秒；链路状态：%s\n"
 const listTracesGraphqlQuery = `query queryTraces($condition: TraceQueryCondition) {

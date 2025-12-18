@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY1ODkzOTQzLCJpYXQiOjE3NjU4OTAzNDN9.1as_WR-TKdTrqCbByQfm_nZ24aQ4UQ5xtYOjuyc8URk"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDI4NTE1LCJpYXQiOjE3NjYwMjQ5MTV9.zXoAaudFNEnxY3KkW2zBJj2k4FvpAJkWFvlv0-HKkN4"
 )
 
 func TestInvokeListTracesTool(t *testing.T) {
@@ -40,8 +40,8 @@ func TestInvokeListTracesTool(t *testing.T) {
 	arguments := make(map[string]any)
 	//arguments[tools.StartParamName] = "2025-12-12 14:00:00"
 	arguments[tools.ServiceNameParamName] = "auth"
-	//arguments[endpointNameParamName] = "POST:/refreshToken"
-	arguments[traceStateParamName] = "ERROR"
+	arguments[endpointNameParamName] = "POST:/authentication/authorization"
+	//arguments[traceStateParamName] = "ERROR"
 	request.Params.Arguments = arguments
 
 	_, err := InvokeListTracesTool(context.Background(), request)
