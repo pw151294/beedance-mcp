@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDI4NTE1LCJpYXQiOjE3NjYwMjQ5MTV9.zXoAaudFNEnxY3KkW2zBJj2k4FvpAJkWFvlv0-HKkN4"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDQxNTQ3LCJpYXQiOjE3NjYwMzc5NDd9.lbchaRe3MqSeMbNB9YwNhTS5y8QRgeCy4MvJvshoJHI"
 )
 
 func TestInvokeListTracesTool(t *testing.T) {

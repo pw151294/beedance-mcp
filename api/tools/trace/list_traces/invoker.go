@@ -19,21 +19,18 @@ func ListTracesToolSchema() mcp.Tool {
 		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
 		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
 		mcp.WithString(endpointNameParamName, mcp.Description(endpointNameParamDesc)),
+		mcp.WithOutputSchema[ListTracesResponse](),
 	)
 }
 
-func ListTraces(variable ListTracesVariable, headers map[string]string) (string, error) {
+func ListTraces(variable ListTracesVariable, headers map[string]string) (ListTracesResponse, error) {
 	// 1. 发送graphql请求
 	graphqlResp, err := graphql.DoGraphqlRequest[ListTracesVariable, ListTracesResponse](listTracesGraphqlQuery, headers, variable)
 	if err != nil {
 		loggers.Error("send graphql request failed", zap.Any("variable", variable), zap.Error(err))
-		return "", err
+		return ListTracesResponse{}, err
 	}
-
-	// 2. 将工具调用的结果转换成白话文
-	tracesData := graphqlResp.Data
-	loggers.Info("tracesData", zap.Any("tracesData", tracesData))
-	return convert2Message(tracesData.Data), nil
+	return graphqlResp.Data, nil
 }
 
 func InvokeListTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
@@ -50,11 +47,15 @@ func InvokeListTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mc
 		loggers.Error("build headers from request failed", zap.Any("request", request), zap.Error(err))
 		return mcp.NewToolResultError("获取graphql请求头失败：" + err.Error()), nil
 	}
-	listTracesMessage, err := ListTraces(variable, headers)
+	listTracesResp, err := ListTraces(variable, headers)
 	if err != nil {
-		loggers.Error("list traces message failed", zap.Any("request", request), zap.Error(err))
-		return mcp.NewToolResultError("发送graphql请求失败：" + err.Error()), nil
+		loggers.Error("invoke list traces failed", zap.Error(err))
+		return mcp.NewToolResultError("调用list_taces工具失败：" + err.Error()), nil
 	}
-	loggers.Info("invoke list traces tool success", zap.Any("message", listTracesMessage))
-	return mcp.NewToolResultText(listTracesMessage), nil
+
+	// 3. 使用结构化输出
+	loggers.Info("list traces response", zap.Any("list traces response", listTracesResp))
+	message := convert2Message(listTracesResp.Data)
+	loggers.Info("tool invoke success", zap.Any("message", message))
+	return mcp.NewToolResultStructured(listTracesResp, message), nil
 }

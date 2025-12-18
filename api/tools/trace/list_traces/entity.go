@@ -21,18 +21,18 @@ type ListTracesVariable struct {
 }
 
 type Trace struct {
-	Key           string   `json:"key"`
-	EndpointNames []string `json:"endpointNames"`
-	Duration      int      `json:"duration"`
-	Start         string   `json:"start"`
-	IsError       bool     `json:"isError"`
-	TraceIds      []string `json:"traceIds"`
+	Key           string   `json:"key" jsonschema_description:"链路片段的唯一标识符"`
+	EndpointNames []string `json:"endpointNames" jsonschema_description:"链路中涉及的端点名称列表"`
+	Duration      int      `json:"duration" jsonschema_description:"链路持续时间（毫秒）"`
+	Start         string   `json:"start" jsonschema_description:"链路开始的时间戳"`
+	IsError       bool     `json:"isError" jsonschema_description:"指示链路是否包含错误"`
+	TraceIds      []string `json:"traceIds" jsonschema_description:"与此片段关联的链路ID列表"`
 }
 
 type TracesData struct {
-	Traces []Trace `json:"traces"`
+	Traces []Trace `json:"traces" jsonschema_description:"找到的链路片段列表"`
 }
 
 type ListTracesResponse struct {
-	Data TracesData `json:"data"`
+	Data TracesData `json:"data" jsonschema_description:"链路查询结果的容器"`
 }
