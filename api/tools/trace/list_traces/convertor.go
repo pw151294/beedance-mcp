@@ -22,7 +22,6 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 		return ListTracesVariable{}, errors.New("获取工作空间ID参数失败")
 	}
 
-	// 1.服务名称
 	serviceName, err := request.RequireString(tools.ServiceNameParamName)
 	if err != nil {
 		loggers.Error("parse service name from request failed", zap.Any("request", request), zap.Error(err))
@@ -33,7 +32,6 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	endpointName := request.GetString(endpointNameParamName, "")
 	endpointId := convertor.ConvertServiceIDAndEndpointName2EndpointID(serviceId, endpointName)
 
-	// 2.开始时间 链路状态
 	start := request.GetString(tools.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
@@ -42,7 +40,6 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	}
 	traceState := request.GetString(traceStateParamName, "ALL")
 
-	// 3.查询条件
 	condition := Condition{}
 	condition.TraceState = traceState
 	condition.ServiceId = serviceId
@@ -52,6 +49,51 @@ func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
 	condition.Paging = Paging{PageNum: pageNum, PageSize: pageSize}
 
 	return ListTracesVariable{Condition: condition}, nil
+}
+
+func convert2Variables(request mcp.CallToolRequest) ([]ListTracesVariable, error) {
+	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
+	if workspaceId == "" {
+		loggers.Error("parse workspaceId from request headers failed,", zap.Any("headers", request.Header))
+		return nil, errors.New("获取工作空间ID参数失败")
+	}
+
+	serviceName, err := request.RequireString(tools.ServiceNameParamName)
+	if err != nil {
+		loggers.Error("parse serviceName from request failed,", zap.Any("request", request), zap.Error(err))
+		return nil, fmt.Errorf("获取服务名称参数失败：%w", err)
+	}
+	serviceIds := list_services.ConvertServiceNames2IDs(request, workspaceId, []string{serviceName})
+	serviceId := serviceIds[0]
+
+	endpointNames, err := request.RequireStringSlice(endpointNamesParamName)
+	if err != nil || len(endpointNames) == 0 {
+		loggers.Error("parse endpointNames from request failed,", zap.Any("request", request), zap.Error(err))
+		return nil, fmt.Errorf("获取接口名称列表失败：%w", err)
+	}
+
+	start := request.GetString(tools.StartParamName, "")
+	duration, err := timeutils.BuildDuration(start)
+	if err != nil {
+		loggers.Error("parse duration from request failed", zap.Any("start", start), zap.Error(err))
+		return nil, fmt.Errorf("获取查询时间参数失败：%v", err)
+	}
+	traceState := request.GetString(traceStateParamName, "ALL")
+
+	variables := make([]ListTracesVariable, 0, len(endpointNames))
+	for _, endpointName := range endpointNames {
+		condition := Condition{}
+		condition.TraceState = traceState
+		condition.ServiceId = serviceId
+		condition.EndpointId = convertor.ConvertServiceIDAndEndpointName2EndpointID(serviceId, endpointName)
+		condition.QueryOrder = queryOrder
+		condition.QueryDuration = duration
+		condition.Paging = Paging{PageNum: pageNum, PageSize: pageSize}
+
+		variable := ListTracesVariable{Condition: condition}
+		variables = append(variables, variable)
+	}
+	return variables, nil
 }
 
 func convertEndpoints2Message(endPoints []string) string {
@@ -77,7 +119,7 @@ func convertTraceIds2Message(traceIds []string) string {
 	return traceIdMessageBuffer.String()
 }
 
-func Convert2Message(tracesData TracesData) string {
+func convert2Message(tracesData TracesData) string {
 	var toolInvokeMessageBuffer bytes.Buffer
 
 	traces := tracesData.Traces

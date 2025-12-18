@@ -21,6 +21,20 @@ func convert2Variable(request mcp.CallToolRequest) (DetailTraceVariable, error) 
 	return DetailTraceVariable{TraceId: traceId}, nil
 }
 
+func convert2Variables(request mcp.CallToolRequest) ([]DetailTraceVariable, error) {
+	traceIds, err := request.RequireStringSlice(traceIDsParamName)
+	if err != nil || len(traceIds) == 0 {
+		loggers.Error("parse traceIds from request failed", zap.Any("request", request), zap.Error(err))
+		return nil, fmt.Errorf("获取链路ID数组失败：%w", err)
+	}
+
+	variables := make([]DetailTraceVariable, 0, len(traceIds))
+	for _, traceId := range traceIds {
+		variables = append(variables, DetailTraceVariable{TraceId: traceId})
+	}
+	return variables, nil
+}
+
 func convertTags2Message(tags []Tag) string {
 	if len(tags) == 0 {
 		return ""

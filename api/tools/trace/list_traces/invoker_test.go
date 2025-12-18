@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDQxNTQ3LCJpYXQiOjE3NjYwMzc5NDd9.lbchaRe3MqSeMbNB9YwNhTS5y8QRgeCy4MvJvshoJHI"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDUyMzE5LCJpYXQiOjE3NjYwNDg3MTl9.7gi_NBbBgIFER99MutqfEu_juDyqz73BW0VeDpYpljg"
 )
 
 func TestInvokeListTracesTool(t *testing.T) {
@@ -47,5 +47,37 @@ func TestInvokeListTracesTool(t *testing.T) {
 	_, err := InvokeListTracesTool(context.Background(), request)
 	if err != nil {
 		log.Fatalf("Error invoking list traces tool, %s", err)
+	}
+}
+
+func TestInvokeEndpointsTracesTool(t *testing.T) {
+	if err := configs.InitConfig(configPath); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
+	}
+	if err := loggers.InitGlobalLogger(&configs.GlobalConfig.Log); err != nil {
+		log.Fatalf("Error initializing logger, %s", err)
+	}
+	cache.InitCacheManager()
+
+	graphql.InitClient()
+	request := mcp.CallToolRequest{
+		Request: mcp.Request{},
+		Header:  make(map[string][]string),
+		Params:  mcp.CallToolParams{},
+	}
+	request.Header.Set(tools.WorkspaceIdHeaderName, workspaceId)
+	request.Header.Set(tools.TokenHeaderName, token)
+	request.Header.Set("Content-Type", "application/json")
+
+	arguments := make(map[string]any)
+	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
+	arguments[tools.ServiceNameParamName] = "auth"
+	arguments[endpointNamesParamName] = []string{"POST:/refreshToken"}
+	arguments["state"] = "ERROR"
+	request.Params.Arguments = arguments
+
+	_, err := InvokeEndpointsTracesTool(context.Background(), request)
+	if err != nil {
+		log.Fatalf("Error invoking endpoints traces tool, %s", err)
 	}
 }

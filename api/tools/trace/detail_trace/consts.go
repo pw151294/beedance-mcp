@@ -2,9 +2,13 @@ package detail_trace
 
 const detailTraceToolName = "detail_trace"
 const detailTraceToolDesc = "根据链路ID查询链路详情"
-
 const traceIDParamName = "traceId"
 const traceIDParamDesc = "链路ID"
+
+const detailTracesToolName = "detail_traces"
+const detailTracesToolDesc = "根据链路ID数组批量查询链路详情"
+const traceIDsParamName = "traceIds"
+const traceIDsParamDesc = "链路ID数组"
 
 const eventPropertyName = "event"
 const errorKindPropertyName = "error.kind"
