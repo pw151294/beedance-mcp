@@ -15,6 +15,7 @@ func DetailTraceToolSchema() mcp.Tool {
 		detailTraceToolName,
 		mcp.WithDescription(detailTraceToolDesc),
 		mcp.WithString(traceIDParamName, mcp.Required(), mcp.Description(traceIDParamDesc)),
+		mcp.WithOutputSchema[DetailTraceResponse](),
 	)
 }
 
@@ -43,5 +44,5 @@ func InvokeDetailTraceTool(ctx context.Context, request mcp.CallToolRequest) (*m
 	loggers.Info("trace detail", zap.Any("trace detail", traceDetail))
 	message := convert2Message(traceDetail.TraceDetail)
 	loggers.Info("tool invoke success", zap.String("tool invoke message", message))
-	return mcp.NewToolResultText(message), nil
+	return mcp.NewToolResultStructured(traceDetail, message), nil
 }
