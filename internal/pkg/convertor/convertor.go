@@ -27,6 +27,19 @@ func ConvertServiceIDAndEndpointName2EndpointID(serviceID, endpointName string) 
 	return serviceID + endpointSplitter + encodeBase64([]byte(endpointName))
 }
 
+func ConvertEndpointID2Name(endpointId string) string {
+	pairs := strings.Split(endpointId, endpointSplitter)
+	if len(pairs) != 2 {
+		loggers.Warn("invalid endpoint id", zap.String("endpointId", endpointId))
+		return ""
+	}
+	endpointName, err := decodeBase64(pairs[1])
+	if err != nil {
+		loggers.Warn("invalid endpoint code", zap.String("endpointCode", pairs[1]), zap.Error(err))
+	}
+	return string(endpointName)
+}
+
 func ConvertServiceID2Name(serviceID string) string {
 	// 示例："YXV0aHx0b2tfMzY2NWQ2ODhiMzI4NGZhMzllYWNlNzE3NWNiMGRlMTR8.1" 只需要解码.之前的内容即可
 	parts := strings.SplitN(serviceID, ".", 2)

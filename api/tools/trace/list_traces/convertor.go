@@ -77,7 +77,7 @@ func convertTraceIds2Message(traceIds []string) string {
 	return traceIdMessageBuffer.String()
 }
 
-func convert2Message(tracesData TracesData) string {
+func Convert2Message(tracesData TracesData) string {
 	var toolInvokeMessageBuffer bytes.Buffer
 
 	traces := tracesData.Traces

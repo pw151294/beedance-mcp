@@ -50,12 +50,12 @@ func InvokeListTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mc
 	listTracesResp, err := ListTraces(variable, headers)
 	if err != nil {
 		loggers.Error("invoke list traces failed", zap.Error(err))
-		return mcp.NewToolResultError("调用list_taces工具失败：" + err.Error()), nil
+		return mcp.NewToolResultError("调用list_traces工具失败：" + err.Error()), nil
 	}
 
 	// 3. 使用结构化输出
 	loggers.Info("list traces response", zap.Any("list traces response", listTracesResp))
-	message := convert2Message(listTracesResp.Data)
+	message := Convert2Message(listTracesResp.Data)
 	loggers.Info("tool invoke success", zap.Any("message", message))
 	return mcp.NewToolResultStructured(listTracesResp, message), nil
 }
