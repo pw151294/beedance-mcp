@@ -98,11 +98,11 @@ func convertEndpointMetric2Message(metricName string, metricVal MetricValue) str
 
 	switch metricName {
 	case endpointCpmMetricsName:
-		return fmt.Sprintf(endpointCpmMetricsInfoPattern, serviceName, metricVal.Name, val)
+		return fmt.Sprintf(endpointCpmMetricsInfoPattern, serviceName, metricVal.Name, metricVal.Id, val)
 	case endpointSlaMetricsName:
-		return fmt.Sprintf(endpointSlaMetricsInfoPattern, serviceName, metricVal.Name, convertor.ConvertSlaVal2Rate(val))
+		return fmt.Sprintf(endpointSlaMetricsInfoPattern, serviceName, metricVal.Name, metricVal.Id, convertor.ConvertSlaVal2Rate(val))
 	case endpointRespTimeMetricsName:
-		return fmt.Sprintf(endpointRespTimeMetricsInfoPattern, serviceName, metricVal.Name, val)
+		return fmt.Sprintf(endpointRespTimeMetricsInfoPattern, serviceName, metricVal.Name, metricVal.Id, val)
 	default:
 		return ""
 	}

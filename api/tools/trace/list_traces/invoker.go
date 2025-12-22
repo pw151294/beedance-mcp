@@ -72,7 +72,7 @@ func EndpointsTracesToolSchema() mcp.Tool {
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
 		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
 		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
-		mcp.WithArray(endpointNamesParamName, mcp.Required(), mcp.Description(endpointNamesParamDesc)),
+		mcp.WithArray(endpointIdsParamName, mcp.Required(), mcp.Description(endpointIdsParamDesc)),
 	)
 }
 

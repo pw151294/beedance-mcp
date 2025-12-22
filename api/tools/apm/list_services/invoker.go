@@ -37,6 +37,7 @@ func listServices(request mcp.CallToolRequest) (ListServicesResponse, error) {
 		return ListServicesResponse{}, err
 	}
 
+	loggers.Info("call graphql request success", zap.Any("list services", graphqlResp))
 	return graphqlResp.Data, nil
 }
 
@@ -49,5 +50,6 @@ func InvokeListServicesTool(ctx context.Context, request mcp.CallToolRequest) (*
 
 	// 将工具调用结果转换成白话文
 	message := convert2Message(listServicesResp)
+	loggers.Info("tool invoke success", zap.String("message", message))
 	return mcp.NewToolResultText(message), nil
 }

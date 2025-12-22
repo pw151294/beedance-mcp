@@ -16,7 +16,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2MDUyMzE5LCJpYXQiOjE3NjYwNDg3MTl9.7gi_NBbBgIFER99MutqfEu_juDyqz73BW0VeDpYpljg"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2Mzk2OTE5LCJpYXQiOjE3NjYzOTMzMTl9.gbXaDknQYO3XOuUD8CcPiV7jWii1crGKcPvrIn61OP0"
 )
 
 func TestInvokeListTracesTool(t *testing.T) {
@@ -72,7 +72,7 @@ func TestInvokeEndpointsTracesTool(t *testing.T) {
 	arguments := make(map[string]any)
 	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
 	arguments[tools.ServiceNameParamName] = "auth"
-	arguments[endpointNamesParamName] = []string{"/auth/authChange"}
+	arguments[endpointIdsParamName] = []string{"YXV0aHx0b2tfMzY2NWQ2ODhiMzI4NGZhMzllYWNlNzE3NWNiMGRlMTR8.1_R0VUOi92YWxpZGF0ZUludGVncmFsaXR5"}
 	arguments["state"] = "ERROR"
 	request.Params.Arguments = arguments
 

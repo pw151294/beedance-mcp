@@ -12,9 +12,9 @@ const endpointCpmMetricsName = "endpoint_cpm"
 const endpointSlaMetricsName = "endpoint_sla"
 const endpointRespTimeMetricsName = "endpoint_resp_time"
 
-const endpointCpmMetricsInfoPattern = "服务：%s；接口：%s；负载：%d次/分\n"
-const endpointRespTimeMetricsInfoPattern = "服务：%s；接口：%s；响应时间：%d毫秒\n"
-const endpointSlaMetricsInfoPattern = "服务：%s；接口：%s；成功率：%.2f\n"
+const endpointCpmMetricsInfoPattern = "服务：%s；接口：%s；接口ID：%s；负载：%d次/分\n"
+const endpointRespTimeMetricsInfoPattern = "服务：%s；接口：%s；接口ID：%s；响应时间：%d毫秒\n"
+const endpointSlaMetricsInfoPattern = "服务：%s；接口：%s；接口ID：%s；成功率：%.2f\n"
 
 const endpointCpmGraphqlQuery = `query queryData($duration: Duration!,$condition0: TopNCondition!) {endpoint_cpm0: sortMetrics(condition: $condition0, duration: $duration){
     name

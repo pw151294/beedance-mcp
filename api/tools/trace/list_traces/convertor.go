@@ -66,12 +66,11 @@ func convert2Variables(request mcp.CallToolRequest) ([]ListTracesVariable, error
 	serviceIds := list_services.ConvertServiceNames2IDs(request, workspaceId, []string{serviceName})
 	serviceId := serviceIds[0]
 
-	endpointNames, err := request.RequireStringSlice(endpointNamesParamName)
-	if err != nil || len(endpointNames) == 0 {
-		loggers.Error("parse endpointNames from request failed,", zap.Any("request", request), zap.Error(err))
-		return nil, fmt.Errorf("获取接口名称列表失败：%w", err)
+	endpointIds, err := request.RequireStringSlice(endpointIdsParamName)
+	if err != nil || len(endpointIds) == 0 {
+		loggers.Error("parse endpointIds from request failed,", zap.Any("request", request), zap.Error(err))
+		return nil, fmt.Errorf("获取接口ID列表参数失败：%w", err)
 	}
-
 	start := request.GetString(tools.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
@@ -80,12 +79,12 @@ func convert2Variables(request mcp.CallToolRequest) ([]ListTracesVariable, error
 	}
 	traceState := request.GetString(traceStateParamName, "ALL")
 
-	variables := make([]ListTracesVariable, 0, len(endpointNames))
-	for _, endpointName := range endpointNames {
+	variables := make([]ListTracesVariable, 0, len(endpointIds))
+	for _, endpointId := range endpointIds {
 		condition := Condition{}
 		condition.TraceState = traceState
 		condition.ServiceId = serviceId
-		condition.EndpointId = convertor.ConvertServiceIDAndEndpointName2EndpointID(serviceId, endpointName)
+		condition.EndpointId = endpointId
 		condition.QueryOrder = queryOrder
 		condition.QueryDuration = duration
 		condition.Paging = Paging{PageNum: pageNum, PageSize: pageSize}

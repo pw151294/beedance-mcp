@@ -6,6 +6,7 @@ import (
 	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/api/tools/apm/services_topology"
+	"beedance-mcp/api/tools/common"
 	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/configs"
@@ -47,6 +48,9 @@ func main() {
 		server.WithLogging(),
 		server.WithRecovery(),
 	)
+
+	// 添加common工具
+	s.AddTool(common.GetCurrentTimeToolSchema(), common.InvokeGetCurrentTimeTool)
 
 	// 添加apm工具
 	s.AddTool(list_services.ListServicesToolSchema(), list_services.InvokeListServicesTool)
