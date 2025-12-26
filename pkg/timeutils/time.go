@@ -13,7 +13,7 @@ const HourStep Step = "HOUR"
 const DayStep Step = "DAY"
 
 // 根据开始时间距离当前时间的间隔，分配合适的步长
-// 1.将start转换成time.Time类型，如果转换失败，start默认设置成time.Now().Add(-30*time.Minute)，返回"MINUTE"
+// 1.将start转换成time.Time类型，如果转换失败，start默认设置成time.Now().Add(-24 * time.Hour)，返回"DAY"
 // 2.计算start和time.Now()之间的间隔：
 // 1）小于1分钟，返回SecondStep
 // 2）小于1小时，返回MinuteStep
@@ -28,7 +28,7 @@ func parseStep(start *string) Step {
 	startTime, err = time.ParseInLocation(time.DateTime, *start, time.Local)
 	if err != nil {
 		// 如果解析失败，设置默认 start 时间，并用该时间继续后续计算
-		newStart := time.Now().Add(-30 * time.Minute)
+		newStart := time.Now().Add(-24 * time.Hour)
 		*start = newStart.Format(time.DateTime)
 		startTime = newStart
 	}
