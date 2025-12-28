@@ -17,7 +17,7 @@ func ListServicesToolSchema() mcp.Tool {
 	)
 }
 
-func listServices(request mcp.CallToolRequest) (ListServicesResponse, error) {
+func ListServices(request mcp.CallToolRequest) (ListServicesResponse, error) {
 	// 1. 转换请求参数
 	variables, err := convert2Variables(request)
 	if err != nil {
@@ -43,7 +43,7 @@ func listServices(request mcp.CallToolRequest) (ListServicesResponse, error) {
 
 func InvokeListServicesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// 获取服务列表数据
-	listServicesResp, err := listServices(request)
+	listServicesResp, err := ListServices(request)
 	if err != nil {
 		return mcp.NewToolResultError("获取服务列表失败：" + err.Error()), nil
 	}

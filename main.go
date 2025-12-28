@@ -60,7 +60,7 @@ func main() {
 	s.AddTool(metrics_endpoints.MetricsEndpointsToolSchema(), metrics_endpoints.InvokeMetricsEndpointsTool)
 
 	// 添加trace工具
-	s.AddTool(list_traces.ListTracesToolSchema(), list_traces.InvokeListTracesTool)
+	s.AddTool(list_traces.ListEndpointToolSchema(), list_traces.InvokeListEndpointTool)
 	s.AddTool(list_traces.EndpointsTracesToolSchema(), list_traces.InvokeEndpointsTracesTool)
 	s.AddTool(detail_trace.DetailTraceToolSchema(), detail_trace.InvokeDetailTraceTool)
 	s.AddTool(detail_trace.DetailTracesToolSchema(), detail_trace.InvokeDetailTracesTool)

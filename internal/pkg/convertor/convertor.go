@@ -16,15 +16,19 @@ func decodeBase64(s string) ([]byte, error) {
 	return base64.StdEncoding.DecodeString(s)
 }
 
-func encodeBase64(data []byte) string {
-	return base64.StdEncoding.EncodeToString(data)
-}
-
-func ConvertServiceIDAndEndpointName2EndpointID(serviceID, endpointName string) string {
-	if endpointName == "" {
-		return ""
+func ConvertEndpointID2ServiceIDAndEndpointName(endpointId string) (string, string) {
+	pairs := strings.Split(endpointId, endpointSplitter)
+	if len(pairs) != 2 {
+		loggers.Warn("invalid endpoint id", zap.String("endpointId", endpointId))
+		return "", ""
 	}
-	return serviceID + endpointSplitter + encodeBase64([]byte(endpointName))
+	endpointName, err := decodeBase64(pairs[1])
+	if err != nil {
+		loggers.Warn("invalid endpoint code", zap.String("endpointCode", pairs[1]), zap.Error(err))
+		return "", ""
+	}
+
+	return ConvertServiceID2Name(pairs[0]), string(endpointName)
 }
 
 func ConvertEndpointID2Name(endpointId string) string {

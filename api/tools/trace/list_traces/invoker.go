@@ -15,16 +15,71 @@ import (
 	"go.uber.org/zap"
 )
 
-// ListTracesToolSchema --- list_traces ---
-func ListTracesToolSchema() mcp.Tool {
+// ListEndpointToolSchema --- list_endpoints ---
+func ListEndpointToolSchema() mcp.Tool {
 	return mcp.NewTool(
-		listTracesToolName,
-		mcp.WithDescription(listTracesToolDesc),
+		listEndpointsToolName,
+		mcp.WithDescription(listEndpointsToolDesc),
+		mcp.WithString(tools.ServiceNamesParamName, mcp.Description(tools.ServiceNamesParamDesc)),
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
-		mcp.WithString(traceStateParamName, mcp.Description(traceStateParamDesc)),
-		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
-		mcp.WithString(endpointNameParamName, mcp.Description(endpointNameParamDesc)),
 	)
+}
+
+func InvokeListEndpointTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+	// 1. 获取查询参数
+	variables, err := convert2ListEndpointsVariables(request)
+	if err != nil {
+		loggers.Error("convert request to list endpoints variables failed", zap.Any("request", request), zap.Error(err))
+		return mcp.NewToolResultErrorf("获取graphql请求变量失败：%v", err), nil
+	}
+	headers, err := httputils.BuildHeaders(request)
+	if err != nil {
+		loggers.Error("build headers from request failed", zap.Any("request", request), zap.Error(err))
+		return mcp.NewToolResultErrorf("获取graphql请求头失败：%v", err), nil
+	}
+
+	// 2. 获取接口信息
+	respCh := make(chan ListEndpointResponse)
+	var wg sync.WaitGroup
+	wg.Add(len(variables))
+	for _, variable := range variables {
+		go func(ListEndpointsVariable) {
+			defer wg.Done()
+
+			graphqlResp, err := graphql.DoGraphqlRequest[ListEndpointsVariable, ListEndpointResponse](listEndpointsGraphqlQuery, headers, variable)
+			if err != nil {
+				loggers.Error("send graphql request failed", zap.Any("variable", variable), zap.Error(err))
+				return
+			}
+			if len(graphqlResp.Data.Pods) > 0 {
+				respCh <- graphqlResp.Data
+			}
+		}(variable)
+	}
+	go func() {
+		wg.Wait()
+		close(respCh)
+	}()
+
+	// 3. 采集接口信息
+	pods := make([]Pod, 0, 0)
+	for resp := range respCh {
+		pods = append(pods, resp.Pods...)
+	}
+	var toolInvokeMessageBuffer bytes.Buffer
+	if len(pods) == 0 {
+		toolInvokeMessageBuffer.WriteString("未查询到任何接口信息")
+	} else {
+		toolInvokeMessageBuffer.WriteString("接口信息如下：\n")
+		for _, pod := range pods {
+			toolInvokeMessageBuffer.WriteString(convertPod2Message(pod))
+		}
+	}
+
+	loggers.Info("list endpoints traces resp", zap.Any("response", pods))
+	message := toolInvokeMessageBuffer.String()
+	loggers.Info("list endpoints tool invoke success", zap.String("message", message))
+	return mcp.NewToolResultText(message), nil
 }
 
 func ListTraces(variable ListTracesVariable, headers map[string]string) (ListTracesResponse, error) {
@@ -35,33 +90,6 @@ func ListTraces(variable ListTracesVariable, headers map[string]string) (ListTra
 		return ListTracesResponse{}, err
 	}
 	return graphqlResp.Data, nil
-}
-
-func InvokeListTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
-	// 1. 转换请求参数
-	variable, err := convert2Variable(request)
-	if err != nil {
-		loggers.Error("convert request to variable failed", zap.Any("request", request), zap.Error(err))
-		return mcp.NewToolResultError("获取graphql请求参数失败：" + err.Error()), nil
-	}
-
-	// 2. 发送graphql请求
-	headers, err := httputils.BuildHeaders(request)
-	if err != nil {
-		loggers.Error("build headers from request failed", zap.Any("request", request), zap.Error(err))
-		return mcp.NewToolResultError("获取graphql请求头失败：" + err.Error()), nil
-	}
-	listTracesResp, err := ListTraces(variable, headers)
-	if err != nil {
-		loggers.Error("invoke list traces failed", zap.Error(err))
-		return mcp.NewToolResultError("调用list_traces工具失败：" + err.Error()), nil
-	}
-
-	// 3. 使用结构化输出
-	loggers.Info("list traces response", zap.Any("list traces response", listTracesResp))
-	message := convert2Message(listTracesResp.Data)
-	loggers.Info("tool invoke success", zap.Any("message", message))
-	return mcp.NewToolResultText(message), nil
 }
 
 // EndpointsTracesToolSchema --- endpoints_traces
@@ -78,7 +106,7 @@ func EndpointsTracesToolSchema() mcp.Tool {
 
 func InvokeEndpointsTracesTool(ctx context.Context, request mcp.CallToolRequest) (*mcp.CallToolResult, error) {
 	// 1. 获取查询参数
-	variables, err := convert2Variables(request)
+	variables, err := convert2ListTracesVariables(request)
 	if err != nil {
 		loggers.Error("convert request to variables failed", zap.Any("request", request), zap.Error(err))
 		return mcp.NewToolResultErrorf("获取graphql请求变量失败：%v", err), nil

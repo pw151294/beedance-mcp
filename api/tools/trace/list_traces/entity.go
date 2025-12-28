@@ -2,6 +2,20 @@ package list_traces
 
 import "beedance-mcp/api/tools"
 
+type ListEndpointsVariable struct {
+	ServiceId string         `json:"serviceId"`
+	Duration  tools.Duration `json:"duration"`
+	Keyword   string         `json:"keyword"`
+}
+type ListEndpointResponse struct {
+	Pods []Pod `json:"pods"`
+}
+type Pod struct {
+	Id    string `json:"id"`
+	Value string `json:"value"`
+	Label string `json:"label"`
+}
+
 type Paging struct {
 	PageNum  int `json:"pageNum"`
 	PageSize int `json:"pageSize"`

@@ -15,11 +15,11 @@ import (
 
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
-	workspaceId = "3"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2Mzk2OTE5LCJpYXQiOjE3NjYzOTMzMTl9.gbXaDknQYO3XOuUD8CcPiV7jWii1crGKcPvrIn61OP0"
+	workspaceId = "63"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2ODk2MDY3LCJpYXQiOjE3NjY4OTI0Njd9.4pMKysgntI9FR67sSh8lsi3BqibbUf_-EuPXWfVefmk"
 )
 
-func TestInvokeListTracesTool(t *testing.T) {
+func TestInvokeListEndpointsTool(t *testing.T) {
 	if err := configs.InitConfig(configPath); err != nil {
 		log.Fatalf("Error reading config file, %s", err)
 	}
@@ -37,16 +37,15 @@ func TestInvokeListTracesTool(t *testing.T) {
 	request.Header.Set(tools.WorkspaceIdHeaderName, workspaceId)
 	request.Header.Set(tools.TokenHeaderName, token)
 	request.Header.Set("Content-Type", "application/json")
+
 	arguments := make(map[string]any)
-	//arguments[tools.StartParamName] = "2025-12-12 14:00:00"
-	arguments[tools.ServiceNameParamName] = "auth"
-	arguments[endpointNameParamName] = "POST:/authentication/authorization"
-	//arguments[traceStateParamName] = "ERROR"
+	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
+	arguments[tools.ServiceNamesParamName] = []string{"auth"}
 	request.Params.Arguments = arguments
 
-	_, err := InvokeListTracesTool(context.Background(), request)
+	_, err := InvokeListEndpointTool(context.Background(), request)
 	if err != nil {
-		log.Fatalf("Error invoking list traces tool, %s", err)
+		log.Fatalf("Error invoking list endpoints tool, %s", err)
 	}
 }
 

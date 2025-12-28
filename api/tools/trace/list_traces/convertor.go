@@ -15,43 +15,50 @@ import (
 	"go.uber.org/zap"
 )
 
-func convert2Variable(request mcp.CallToolRequest) (ListTracesVariable, error) {
+func convert2ListEndpointsVariables(request mcp.CallToolRequest) ([]ListEndpointsVariable, error) {
 	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from request headers failed,", zap.Any("headers", request.Header))
-		return ListTracesVariable{}, errors.New("获取工作空间ID参数失败")
+		return nil, errors.New("获取工作空间ID参数失败")
 	}
 
-	serviceName, err := request.RequireString(tools.ServiceNameParamName)
-	if err != nil {
-		loggers.Error("parse service name from request failed", zap.Any("request", request), zap.Error(err))
-		return ListTracesVariable{}, fmt.Errorf("获取服务名称参数失败：%v", err)
+	// 1. 获取服务名称列表
+	serviceNames := request.GetStringSlice(tools.ServiceNamesParamName, make([]string, 0, 0))
+	var serviceIds []string
+	if len(serviceNames) > 0 {
+		serviceIds = list_services.ConvertServiceNames2IDs(request, workspaceId, serviceNames)
+	} else {
+		listServicesResp, err := list_services.ListServices(request)
+		if err != nil {
+			loggers.Error("list services failed,", zap.Any("request", request), zap.Error(err))
+			return nil, fmt.Errorf("获取服务列表失败：%w", err)
+		}
+		services := listServicesResp.Services
+		for _, svc := range services {
+			serviceIds = append(serviceIds, svc.ID)
+		}
 	}
-	serviceIds := list_services.ConvertServiceNames2IDs(request, workspaceId, []string{serviceName})
-	serviceId := serviceIds[0]
-	endpointName := request.GetString(endpointNameParamName, "")
-	endpointId := convertor.ConvertServiceIDAndEndpointName2EndpointID(serviceId, endpointName)
 
+	// 2. 获取开始时间
 	start := request.GetString(tools.StartParamName, "")
 	duration, err := timeutils.BuildDuration(start)
 	if err != nil {
 		loggers.Error("parse duration from request failed", zap.Any("start", start), zap.Error(err))
-		return ListTracesVariable{}, fmt.Errorf("获取查询时间参数失败：%v", err)
+		return nil, fmt.Errorf("获取查询时间参数失败：%v", err)
 	}
-	traceState := request.GetString(traceStateParamName, "ALL")
 
-	condition := Condition{}
-	condition.TraceState = traceState
-	condition.ServiceId = serviceId
-	condition.EndpointId = endpointId
-	condition.QueryOrder = queryOrder
-	condition.QueryDuration = duration
-	condition.Paging = Paging{PageNum: pageNum, PageSize: pageSize}
-
-	return ListTracesVariable{Condition: condition}, nil
+	// 3. 构建查询条件
+	variables := make([]ListEndpointsVariable, 0, len(serviceIds))
+	for _, svcId := range serviceIds {
+		variable := ListEndpointsVariable{}
+		variable.ServiceId = svcId
+		variable.Duration = duration
+		variables = append(variables, variable)
+	}
+	return variables, nil
 }
 
-func convert2Variables(request mcp.CallToolRequest) ([]ListTracesVariable, error) {
+func convert2ListTracesVariables(request mcp.CallToolRequest) ([]ListTracesVariable, error) {
 	workspaceId := request.Header.Get(tools.WorkspaceIdHeaderName)
 	if workspaceId == "" {
 		loggers.Error("parse workspaceId from request headers failed,", zap.Any("headers", request.Header))
@@ -93,6 +100,13 @@ func convert2Variables(request mcp.CallToolRequest) ([]ListTracesVariable, error
 		variables = append(variables, variable)
 	}
 	return variables, nil
+}
+
+func convertPod2Message(pod Pod) string {
+	endpointId := pod.Id
+	serviceId, endpointName := convertor.ConvertEndpointID2ServiceIDAndEndpointName(endpointId)
+	serviceName := convertor.ConvertServiceID2Name(serviceId)
+	return fmt.Sprintf(endpointInfoPattern, endpointName, endpointId, serviceName, serviceId)
 }
 
 func convertEndpoints2Message(endPoints []string) string {

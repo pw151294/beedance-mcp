@@ -16,7 +16,7 @@ import (
 func ConvertServiceNames2IDs(request mcp.CallToolRequest, workspaceId string, serviceNames []string) []string {
 	name2Id := cache.GetByKey[map[string]string](cache.Name2Id, workspaceId, func() any {
 		name2Id := make(map[string]string)
-		listServicesResp, err := listServices(request)
+		listServicesResp, err := ListServices(request)
 		if err != nil {
 			loggers.Error("list services failed", zap.Any("request", request), zap.Error(err))
 			return name2Id
