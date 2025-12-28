@@ -6,6 +6,7 @@ import (
 	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/internal/pkg/convertor"
+	"beedance-mcp/internal/pkg/extractor"
 	"beedance-mcp/pkg/loggers"
 	"bytes"
 	"context"
@@ -56,7 +57,7 @@ func InvokeServiceErrorAnalyzerTool(ctx context.Context, request mcp.CallToolReq
 			if message == "" {
 				continue
 			}
-			endpointId, sla := extractEndpointIdAndSla(message)
+			endpointId, sla := extractor.ExtractEndpointIdAndSla(message)
 			if sla < 10000 {
 				endpointIds = append(endpointIds, endpointId)
 			}
@@ -70,7 +71,7 @@ func InvokeServiceErrorAnalyzerTool(ctx context.Context, request mcp.CallToolReq
 	endpointsTracesMcpRequest := convert2EndpointTracesMcpRequest(request, endpointIds, endpointSlaMetricsName)
 	endpointsTracesMcpResult, _ := list_traces.InvokeEndpointsTracesTool(ctx, endpointsTracesMcpRequest)
 	endpointsTracesMcpResultText := convertor.ConvertToolCallResult2Text(endpointsTracesMcpResult)
-	endpointTraces := extractEndpointTraces(endpointsTracesMcpResultText)
+	endpointTraces := extractor.ExtractEndpointTraces(endpointsTracesMcpResultText)
 	if len(endpointTraces) == 0 {
 		return mcp.NewToolResultText("该服务下没有错误链路"), nil
 	}
@@ -129,7 +130,7 @@ func InvokeServiceSlowAnalyzerTool(ctx context.Context, request mcp.CallToolRequ
 			if message == "" {
 				continue
 			}
-			endpointId, rt := extractEndpointIDAndRt(message)
+			endpointId, rt := extractor.ExtractEndpointIDAndRt(message)
 			if rt > 500 {
 				endpointIds = append(endpointIds, endpointId)
 			}
@@ -143,7 +144,7 @@ func InvokeServiceSlowAnalyzerTool(ctx context.Context, request mcp.CallToolRequ
 	endpointsTracesMcpRequest := convert2EndpointTracesMcpRequest(request, endpointIds, endpointRtMetricsName)
 	endpointsTracesMcpResult, _ := list_traces.InvokeEndpointsTracesTool(ctx, endpointsTracesMcpRequest)
 	endpointsTracesMcpResultText := convertor.ConvertToolCallResult2Text(endpointsTracesMcpResult)
-	endpointTraces := extractEndpointTraces(endpointsTracesMcpResultText)
+	endpointTraces := extractor.ExtractEndpointTraces(endpointsTracesMcpResultText)
 	if len(endpointTraces) == 0 {
 		return mcp.NewToolResultText("该服务下没有慢链路"), nil
 	}

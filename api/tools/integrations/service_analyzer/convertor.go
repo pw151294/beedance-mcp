@@ -2,6 +2,7 @@ package service_analyzer
 
 import (
 	"beedance-mcp/api/tools"
+	"beedance-mcp/internal/pkg/extractor"
 	"beedance-mcp/pkg/loggers"
 
 	"github.com/mark3labs/mcp-go/mcp"
@@ -62,7 +63,7 @@ func convert2EndpointTracesMcpRequest(request mcp.CallToolRequest, endpointIds [
 	return mcpRequest
 }
 
-func convert2DetailTracesMcpRequest(request mcp.CallToolRequest, endpointTraces []EndpointTrace) map[string]mcp.CallToolRequest {
+func convert2DetailTracesMcpRequest(request mcp.CallToolRequest, endpointTraces []extractor.EndpointTrace) map[string]mcp.CallToolRequest {
 	endpointName2McpRequest := make(map[string]mcp.CallToolRequest)
 	for _, endpointTrace := range endpointTraces {
 		mcpRequest := copyMcpRequest(request)

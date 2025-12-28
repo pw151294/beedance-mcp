@@ -1,4 +1,4 @@
-package service_analyzer
+package extractor
 
 import (
 	"beedance-mcp/pkg/loggers"
@@ -13,7 +13,7 @@ type EndpointTrace struct {
 	TraceIds     []string
 }
 
-func extractEndpointTraces(text string) []EndpointTrace {
+func ExtractEndpointTraces(text string) []EndpointTrace {
 	// 1. 修改入口判断条件，使用常量
 	if !strings.Contains(text, endpointTraceDetailSuffix) {
 		return []EndpointTrace{}
@@ -97,7 +97,7 @@ func extractTraceId(line string) string {
 	return ""
 }
 
-func extractEndpointIdAndSla(message string) (string, int64) {
+func ExtractEndpointIdAndSla(message string) (string, int64) {
 	// 分割字符串获取各个字段
 	parts := strings.Split(message, semicolonSplitter)
 
@@ -134,7 +134,7 @@ func extractEndpointIdAndSla(message string) (string, int64) {
 	return endpointID, sla
 }
 
-func extractEndpointIDAndRt(message string) (string, int64) {
+func ExtractEndpointIDAndRt(message string) (string, int64) {
 	// 异常处理：空字符串
 	if message == "" {
 		return "", 0
