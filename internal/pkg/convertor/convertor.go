@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"github.com/mark3labs/mcp-go/mcp"
 	"go.uber.org/zap"
 )
 
@@ -103,4 +104,13 @@ func ConvertBool2Desc(isError bool) string {
 
 func ConvertSlaVal2Rate(sla int64) float64 {
 	return float64(sla) / float64(100)
+}
+
+func ConvertToolCallResult2Text(result *mcp.CallToolResult) string {
+	contents := result.Content
+	if len(contents) == 0 {
+		return ""
+	} else {
+		return contents[0].(mcp.TextContent).Text
+	}
 }

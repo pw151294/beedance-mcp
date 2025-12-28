@@ -93,7 +93,6 @@ func convert2Message(traceDetail TraceDetail) string {
 	if len(spans) == 0 {
 		toolInvokeMessageBuffer.WriteString("该链路信息为空")
 	} else {
-		toolInvokeMessageBuffer.WriteString("该链路信息如下：\n")
 		for _, span := range spans {
 			toolInvokeMessageBuffer.WriteString(convertSpan2Message(span))
 		}
