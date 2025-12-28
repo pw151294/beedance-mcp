@@ -17,7 +17,7 @@ func InvokeCreateSegmentToolSchema() mcp.Tool {
 		mcp.WithDescription(ragSegmentCreateToolDesc),
 		mcp.WithString(ragDatasetIdParamName, mcp.Required(), mcp.Description(ragDatasetIdParamDesc)),
 		mcp.WithString(ragDocumentIdParamName, mcp.Required(), mcp.Description(ragDocumentIdParamDesc)),
-		mcp.WithString(ragDocumentIdParamName, mcp.Required(), mcp.Description(contentParamDesc)),
+		mcp.WithString(contentParamName, mcp.Required(), mcp.Description(contentParamDesc)),
 	)
 }
 
