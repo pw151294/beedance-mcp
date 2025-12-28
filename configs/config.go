@@ -26,7 +26,8 @@ type LogConfig struct {
 
 // GatewayConfig 网关配置
 type GatewayConfig struct {
-	URL string `toml:"url"`
+	URL             string `toml:"url"`
+	BeedanceAddress string `toml:"beedance_address"`
 }
 
 // Config 全局配置

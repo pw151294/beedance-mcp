@@ -6,7 +6,8 @@ import (
 	"beedance-mcp/api/tools/apm/metrics_service_relations"
 	"beedance-mcp/api/tools/apm/metrics_services"
 	"beedance-mcp/api/tools/apm/services_topology"
-	"beedance-mcp/api/tools/common"
+	"beedance-mcp/api/tools/common/create_rag_segment"
+	"beedance-mcp/api/tools/common/get_current_time"
 	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
 	"beedance-mcp/configs"
@@ -50,7 +51,8 @@ func main() {
 	)
 
 	// 添加common工具
-	s.AddTool(common.GetCurrentTimeToolSchema(), common.InvokeGetCurrentTimeTool)
+	s.AddTool(get_current_time.GetCurrentTimeToolSchema(), get_current_time.InvokeGetCurrentTimeTool)
+	s.AddTool(create_rag_segment.InvokeCreateSegmentToolSchema(), create_rag_segment.InvokeCreateRagSegmentTool)
 
 	// 添加apm工具
 	s.AddTool(list_services.ListServicesToolSchema(), list_services.InvokeListServicesTool)

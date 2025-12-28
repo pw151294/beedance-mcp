@@ -13,3 +13,4 @@ caller_skip = 1
 
 [gateway]
 url = "http://172.30.34.73/graphql" # oap地址
+beedance_address = "http://172.29.230.202:9090"

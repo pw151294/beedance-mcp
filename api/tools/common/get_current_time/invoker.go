@@ -1,4 +1,4 @@
-package common
+package get_current_time
 
 import (
 	"context"
