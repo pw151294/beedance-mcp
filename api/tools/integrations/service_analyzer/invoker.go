@@ -22,7 +22,7 @@ func ServiceErrorAnalyzerToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		serviceErrorAnalyzerToolName,
 		mcp.WithDescription(serviceErrorAnalyzerToolDesc),
-		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNamesParamDesc)),
+		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)))
 }
 
@@ -30,7 +30,7 @@ func ServiceSlowAnalyzerToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		serviceSlowAnalyzerToolName,
 		mcp.WithDescription(serviceSlowAnalyzerToolDesc),
-		mcp.WithString(tools.ServiceNamesParamName, mcp.Required(), mcp.Description(tools.ServiceNamesParamDesc)),
+		mcp.WithString(tools.ServiceNameParamName, mcp.Required(), mcp.Description(tools.ServiceNameParamDesc)),
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)))
 }
 
