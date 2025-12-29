@@ -29,7 +29,7 @@ func ConvertEndpointID2ServiceIDAndEndpointName(endpointId string) (string, stri
 		return "", ""
 	}
 
-	return ConvertServiceID2Name(pairs[0]), string(endpointName)
+	return pairs[0], string(endpointName)
 }
 
 func ConvertEndpointID2Name(endpointId string) string {

@@ -19,7 +19,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "63"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2OTM0MjU4LCJpYXQiOjE3NjY5MzA2NTh9.Wv77PCw2ARGcazlh2HIIT_rJdvTwS3Sgszo1hspkhN4"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2OTk1MDUwLCJpYXQiOjE3NjY5OTE0NTB9.qh4968Lq__VullAEQSvdf1vB-xC2fLDCrZDZ_OoPDmE"
 )
 
 func TestInvokeServiceErrorAnalyzerTool(t *testing.T) {

@@ -4,6 +4,7 @@ import (
 	"beedance-mcp/api/tools"
 	"beedance-mcp/configs"
 	"beedance-mcp/internal/pkg/cache"
+	"beedance-mcp/internal/pkg/convertor"
 	"beedance-mcp/internal/pkg/graphql"
 	"beedance-mcp/pkg/loggers"
 	"context"
@@ -16,7 +17,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "63"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2OTIyMzQzLCJpYXQiOjE3NjY5MTg3NDN9.mHEFK9gjIFBt78S1ZkfTQKwrTfcNJkxki4nQFUxSMAU"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2OTk4NzI0LCJpYXQiOjE3NjY5OTUxMjR9.QP7f1wta3KzClzr4r0awA2mbKMDoVoT0z7ZayB7Jyx0"
 )
 
 func TestInvokeListEndpointsTool(t *testing.T) {
@@ -40,13 +41,14 @@ func TestInvokeListEndpointsTool(t *testing.T) {
 
 	arguments := make(map[string]any)
 	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
-	arguments[tools.ServiceNamesParamName] = []string{"auth"}
+	arguments[tools.ServiceNamesParamName] = []string{"n9e"}
 	request.Params.Arguments = arguments
 
-	_, err := InvokeListEndpointTool(context.Background(), request)
+	result, err := InvokeListEndpointTool(context.Background(), request)
 	if err != nil {
 		log.Fatalf("Error invoking list endpoints tool, %s", err)
 	}
+	log.Println(convertor.ConvertToolCallResult2Text(result))
 }
 
 func TestInvokeEndpointsTracesTool(t *testing.T) {
@@ -69,10 +71,10 @@ func TestInvokeEndpointsTracesTool(t *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 
 	arguments := make(map[string]any)
-	arguments[tools.StartParamName] = "2025-12-18 13:00:00"
+	arguments[tools.StartParamName] = "2025-12-29 13:00:00"
 	arguments[tools.ServiceNameParamName] = "auth"
-	arguments[endpointIdsParamName] = []string{"YXV0aHx0b2tfOGQ3M2Y1ZDEyNDhlNGY3YzgyMzljYjc1NTExYWZkNTV8.1_R0VUOi9wZXJtaXNzaW9uL2RhdGFHcm91cFRyZWU=", "YXV0aHx0b2tfOGQ3M2Y1ZDEyNDhlNGY3YzgyMzljYjc1NTExYWZkNTV8.1_R0VUOi9wZXJtaXNzaW9uL3VzZXJSb2xlQ291bnRBbmRMYXRlc3RUaW1l"}
-	//arguments["state"] = "ERROR"
+	arguments[endpointIdsParamName] = []string{"YXV0aHx0b2tfOGQ3M2Y1ZDEyNDhlNGY3YzgyMzljYjc1NTExYWZkNTV8.1_UE9TVDovYXV0aC9hdXRoZW50aWNhdGlvbi9hdXRob3JpemF0aW9uL2FwcGxpY2F0aW9u"}
+	arguments["state"] = "ERROR"
 	request.Params.Arguments = arguments
 
 	_, err := InvokeEndpointsTracesTool(context.Background(), request)
