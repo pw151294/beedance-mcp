@@ -8,6 +8,7 @@ import (
 	"beedance-mcp/api/tools/apm/services_topology"
 	"beedance-mcp/api/tools/common/create_rag_segment"
 	"beedance-mcp/api/tools/common/get_current_time"
+	"beedance-mcp/api/tools/integrations/endpoint_analyzer"
 	"beedance-mcp/api/tools/integrations/service_analyzer"
 	"beedance-mcp/api/tools/trace/detail_trace"
 	"beedance-mcp/api/tools/trace/list_traces"
@@ -71,6 +72,8 @@ func main() {
 	// 添加analyzer工具
 	s.AddTool(service_analyzer.ServiceErrorAnalyzerToolSchema(), service_analyzer.InvokeServiceErrorAnalyzerTool)
 	s.AddTool(service_analyzer.ServiceSlowAnalyzerToolSchema(), service_analyzer.InvokeServiceSlowAnalyzerTool)
+	s.AddTool(endpoint_analyzer.EndpointErrorAnalyzerToolSchema(), endpoint_analyzer.InvokeEndpointErrorAnalyzerTool)
+	s.AddTool(endpoint_analyzer.EndpointSlowAnalyzerToolSchema(), endpoint_analyzer.InvokeEndpointSlowAnalyzerTool)
 
 	// 创建并启动 HTTP 服务器
 	httpServer := server.NewStreamableHTTPServer(s)
