@@ -14,4 +14,4 @@ const rightBracket = "]"
 const durationLabel = "总持续时长："
 const durationUnit = "毫秒"
 
-const slowTraceThreshold = 500 // 慢链路阈值：500毫秒
+const slowTraceThreshold = 200 // 慢链路阈值：500毫秒

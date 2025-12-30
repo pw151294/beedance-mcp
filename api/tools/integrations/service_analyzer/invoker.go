@@ -131,7 +131,7 @@ func InvokeServiceSlowAnalyzerTool(ctx context.Context, request mcp.CallToolRequ
 				continue
 			}
 			endpointId, rt := extractor.ExtractEndpointIDAndRt(message)
-			if rt > 500 {
+			if rt > 200 {
 				endpointIds = append(endpointIds, endpointId)
 			}
 		}

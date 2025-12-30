@@ -20,7 +20,6 @@ func ListEndpointToolSchema() mcp.Tool {
 	return mcp.NewTool(
 		listEndpointsToolName,
 		mcp.WithDescription(listEndpointsToolDesc),
-		mcp.WithString(tools.ServiceNamesParamName, mcp.Description(tools.ServiceNamesParamDesc)),
 		mcp.WithString(tools.StartParamName, mcp.Description(tools.StartParamDesc)),
 	)
 }

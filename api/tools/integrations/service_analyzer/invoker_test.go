@@ -19,7 +19,7 @@ import (
 const (
 	configPath  = "/Users/panwei/Downloads/working/2025.12/beedance-mcp/configs/config.toml"
 	workspaceId = "63"
-	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY2OTk1MDUwLCJpYXQiOjE3NjY5OTE0NTB9.qh4968Lq__VullAEQSvdf1vB-xC2fLDCrZDZ_OoPDmE"
+	token       = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxIiwiYWNjb3VudCI6ImFkbWluIiwiZXhwIjoxNzY3MDAyNDIxLCJpYXQiOjE3NjY5OTg4MjF9.tL5DmixbkBFFnB7MansdhVsvUAaCnqSyARckf5YHgbs"
 )
 
 func TestInvokeServiceErrorAnalyzerTool(t *testing.T) {
@@ -73,7 +73,7 @@ func TestInvokeServiceSlowAnalyzerTool(t *testing.T) {
 	request.Header.Set("Content-Type", "application/json")
 
 	arguments := make(map[string]any)
-	arguments[tools.ServiceNameParamName] = "st-logplatform-service"
+	arguments[tools.ServiceNameParamName] = "n9e"
 	arguments[tools.StartParamName] = "2025-12-28 13:00:00"
 	request.Params.Arguments = arguments
 
